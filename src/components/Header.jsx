@@ -4,12 +4,31 @@ import { useNavigate } from "react-router-dom";
 import { Link, NavLink } from "react-router-dom";
 import { Cog, Globe } from "lucide-react";
 import ThemeSwitch from "./Switch";
+import { Button } from "./ui/button";
+import { toast } from "sonner";
 
 export default function Header() {
   const navigate = useNavigate();
+
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+    try {
+      await supabase.auth.signOut();
+
+      toast.success("Você foi desconectado com sucesso! ", {
+        duration: 3000,
+        style: {
+          backgroundColor: "green",
+          color: "white",
+          fontFamily: "JetBrains Mono",
+          border: "none",
+        },
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error.message);
+      toast.error("Ocorreu um erro ao tentar sair.");
+    }
   };
 
   return (
@@ -39,7 +58,12 @@ export default function Header() {
             <Cog className="hover:rotate-90 hover:scale-105 transition-all ease-linear duration-200" />
           </i>
         </Link>
-        <button onClick={handleLogout}>Sair</button>
+        <Button
+          onClick={handleLogout}
+          className="hover:cursor-pointer bg-azul-claro hover:bg-azul-claro/40 transition-all ease-linear px-5 "
+        >
+          Sair
+        </Button>
       </div>
     </header>
   );

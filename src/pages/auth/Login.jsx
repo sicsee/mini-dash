@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { signIn } from "@/services/Auth";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/supabase";
+import { toast } from "sonner";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -13,57 +13,55 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Efeito para checar se o usuário já está autenticado
-  useEffect(() => {
-    const checkUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
-        navigate("/dashboard");
-      }
-    };
-
-    checkUser();
-
-    // Listener para detectar mudanças no estado de autenticação
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          navigate("/dashboard");
-        }
-      }
-    );
-
-    return () => listener?.subscription.unsubscribe();
-  }, [navigate]);
-
-  const handleGoogleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      redirectTo: `${window.location.origin}/dashboard`, // Direcionar para o dashboard após login
-    });
-
-    if (error) {
-      console.error("Erro no login com Google:", error);
-    }
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await signIn(email, password);
-      setError("");
-      navigate("/dashboard");
-    } catch (err) {
-      if (err.message.includes("Invalid login credentials")) {
-        setError("Email ou senha incorretos. Verifique e tente novamente.");
-      } else if (err.message.includes("User not found")) {
-        setError("Usuário não encontrado. Verifique o email cadastrado.");
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error("Erro no login: " + error.message, {
+          duration: 3000,
+          style: {
+            backgroundColor: "red",
+            color: "white",
+            fontFamily: "JetBrains Mono",
+            border: "none",
+          },
+        });
       } else {
-        setError("Ocorreu um erro. Tente novamente mais tarde.");
+        toast.success("Login feito com sucesso!", {
+          duration: 3000,
+          style: {
+            backgroundColor: "green",
+            color: "white",
+            fontFamily: "JetBrains Mono",
+            border: "none",
+          },
+        });
+        navigate("/dashboard");
       }
+    } catch (err) {
+      console.error(err);
+      setError("Erro ao fazer login. Tente novamente.");
+    }
+  };
+
+  // Função de login com Google
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+
+    if (error) {
+      toast.error("Erro no login com Google: " + error.message);
+    } else {
+      toast.success("Login com Google realizado com sucesso!");
     }
   };
 
@@ -89,7 +87,7 @@ export default function Login() {
             <Link to="/">
               <IoMdClose
                 size={35}
-                className="font-thin hover:text-azul-claro transition-all ease-linear "
+                className="font-thin hover:text-azul-claro transition-all ease-linear"
               />
             </Link>
           </div>
@@ -136,12 +134,17 @@ export default function Login() {
               )}
             </form>
 
-            <Button
+            <button
               onClick={handleGoogleLogin}
-              className="w-full bg-white text-black border border-gray-300 hover:bg-gray-100 transition-all hover:cursor-pointer"
+              className="bg-white w-full flex items-center justify-center gap-3 py-2 px-4  rounded-md text-sm font-medium text-zinc-700 hover:bg-zinc-300 transition hover:cursor-pointer mt-5"
             >
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                alt="Google"
+                className="h-5 w-5"
+              />
               Entrar com Google
-            </Button>
+            </button>
           </CardContent>
         </Card>
       </div>

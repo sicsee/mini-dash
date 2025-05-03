@@ -41,6 +41,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-azul-claro: #2d55fb;
   --color-azul-escuro: #050a24;
+  --default-font-family: "Poppins", sans-serif;
 }
 
 :root {
@@ -69,6 +70,7 @@
   --chart-4: #e8c468;
   --chart-5: #f4a462;
   --radius: 0.5rem;
+  --default-font-family: "Poppins", sans-serif;
 }
 
 .dark {
@@ -108,4 +110,5 @@
 }
 html {
   scroll-behavior: smooth;
+  font-family: "Poppins", sans-serif;
 }
