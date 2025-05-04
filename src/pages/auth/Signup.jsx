@@ -10,25 +10,66 @@ import { toast } from "sonner";
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState(""); // Novo campo para o nome
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signUp({ email, password });
-
-    if (error) {
-      toast.error("Erro no login: " + error.message, {
-        duration: 3000,
-        style: {
-          backgroundColor: "red",
-          color: "white",
-          fontFamily: "JetBrains Mono",
-          border: "none",
+    try {
+      // Cadastro
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            display_name: userName,
+          },
         },
       });
-    } else {
-      toast.success("Login feito com sucesso!", {
+      const user = data?.user;
+
+      if (error) {
+        toast.error("Erro no cadastro: " + error.message, {
+          duration: 3000,
+          style: {
+            backgroundColor: "red",
+            color: "white",
+            fontFamily: "JetBrains Mono",
+            border: "none",
+          },
+        });
+        return;
+      }
+
+      if (!user || !user.id || !userName) {
+        toast.error("Dados do usuário ou nome inválidos!", {
+          duration: 3000,
+          style: {
+            backgroundColor: "red",
+            color: "white",
+            fontFamily: "JetBrains Mono",
+            border: "none",
+          },
+        });
+        return;
+      }
+
+      if (profileError) {
+        console.error("Erro ao inserir no perfil:", profileError);
+        toast.error("Erro ao criar perfil: " + profileError.message, {
+          duration: 3000,
+          style: {
+            backgroundColor: "red",
+            color: "white",
+            fontFamily: "JetBrains Mono",
+            border: "none",
+          },
+        });
+        return;
+      }
+
+      toast.success("Cadastro feito com sucesso!", {
         duration: 3000,
         style: {
           backgroundColor: "green",
@@ -37,19 +78,11 @@ export default function Signup() {
           border: "none",
         },
       });
+
       navigate("/dashboard");
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/dashboard` },
-    });
-
-    if (error) {
-      console.error("Erro no login com Google:", error.message);
-      setError("Erro no login com Google.");
+    } catch (err) {
+      console.error(err);
+      setError("Erro ao fazer cadastro. Tente novamente.");
     }
   };
 
@@ -90,25 +123,20 @@ export default function Signup() {
               Crie sua conta
             </CardHeader>
             <CardContent className="space-y-6">
-              <button
-                onClick={handleGoogleLogin}
-                className="bg-white w-full flex items-center justify-center gap-3 py-2 px-4  rounded-md text-sm font-medium text-zinc-700 hover:bg-zinc-300 transition hover:cursor-pointer"
-              >
-                <img
-                  src="https://www.svgrepo.com/show/475656/google-color.svg"
-                  alt="Google"
-                  className="h-5 w-5"
-                />
-                Entrar com Google
-              </button>
-
-              <div className="flex items-center justify-center gap-2 text-sm text-zinc-500">
-                <hr className="w-full border-zinc-300" />
-                ou
-                <hr className="w-full border-zinc-300" />
-              </div>
-
               <form onSubmit={handleSignup} className="space-y-4">
+                <div>
+                  <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">
+                    Nome
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="Seu nome"
+                    onChange={(e) => setUserName(e.target.value)}
+                    required
+                    className="mt-1"
+                  />
+                </div>
+
                 <div>
                   <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">
                     Email

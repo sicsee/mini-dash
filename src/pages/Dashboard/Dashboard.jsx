@@ -1,85 +1,99 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/supabase";
-import Header from "@/components/Header";
 import { toast } from "sonner";
+import Header from "@/components/Header";
+import { Button } from "@/components/ui/button"; // Supondo que você tenha um botão customizado
 
-export default function DashboardLayout({ children }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
+export default function Dashboard() {
+  const [userName, setUserName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [userStats, setUserStats] = useState({
+    tasksCompleted: 0,
+    tasksPending: 0,
+  });
 
   useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
-        navigate("/");
+    const fetchUserData = async () => {
+      try {
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
+        if (userError || !userData?.user?.id) {
+          toast.error("Erro ao obter usuário", {
+            duration: 3000,
+            style: {
+              backgroundColor: "red",
+              color: "white",
+              fontFamily: "JetBrains Mono",
+              border: "none",
+            },
+          });
+          return;
+        }
+
+        const userId = userData.user.id;
+
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("name")
+          .eq("id", userId)
+          .single();
+
+        if (profileError || !profileData) {
+          toast.error("Erro ao carregar nome do perfil", {
+            duration: 3000,
+            style: {
+              backgroundColor: "red",
+              color: "white",
+              fontFamily: "JetBrains Mono",
+              border: "none",
+            },
+          });
+          return;
+        }
+
+        setUserName(profileData.name);
+
+        const { data: statsData, error: statsError } = await supabase
+          .from("user_stats")
+          .select("*")
+          .eq("user_id", userId)
+          .single();
+
+        if (statsError || !statsData) {
+          toast.error("Erro ao carregar estatísticas", {
+            duration: 3000,
+            style: {
+              backgroundColor: "red",
+              color: "white",
+              fontFamily: "JetBrains Mono",
+              border: "none",
+            },
+          });
+          return;
+        }
+
+        setUserStats({
+          tasksCompleted: statsData.tasks_completed,
+          tasksPending: statsData.tasks_pending,
+        });
+      } catch (err) {
+        console.error("Erro inesperado:", err);
+      } finally {
+        setLoading(false);
       }
     };
-    checkSession();
-  }, [navigate]);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    fetchUserData();
+  }, []);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    console.log("User logged out, navigating to Landing Page");
-    navigate("/");
-  };
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
   return (
-    <>
-      <Header onLogout={handleLogout} />
-      <div className="flex h-[557px]">
-        <aside className="w-64 bg-gray-900 text-white p-4 space-y-6 md:block hidden">
-          <h1 className="text-2xl font-bold">Meu Dashboard</h1>
-          <nav className="space-y-2">
-            <Link to="/dashboard" className="block hover:text-cyan-400">
-              Visão Geral
-            </Link>
-            <Link
-              to="/dashboard/usuarios"
-              className="block hover:text-cyan-400"
-            >
-              Usuários
-            </Link>
-            <Link to="/dashboard/config" className="block hover:text-cyan-400">
-              Configurações
-            </Link>
-          </nav>
-        </aside>
-
-        <div className="md:hidden">
-          <button
-            onClick={toggleMenu}
-            className="text-black p-2 focus:outline-none"
-          >
-            {isMenuOpen ? "Fechar Menu" : "Abrir Menu"}
-          </button>
-          {isMenuOpen && (
-            <nav className="absolute top-16 left-0 w-full bg-gray-900 text-white p-4 space-y-6 md:hidden">
-              <Link to="/dashboard" className="block hover:text-cyan-400">
-                Visão Geral
-              </Link>
-              <Link
-                to="/dashboard/usuarios"
-                className="block hover:text-cyan-400"
-              >
-                Usuários
-              </Link>
-              <Link
-                to="/dashboard/config"
-                className="block hover:text-cyan-400"
-              >
-                Configurações
-              </Link>
-            </nav>
-          )}
-        </div>
-
-        <main className="flex-1 p-6 bg-gray-100 overflow-y-auto">
-          {children}
-        </main>
-      </div>
-    </>
+    <div>
+      <Header />
+      <h1>Olá, Mundo!</h1>
+    </div>
   );
 }
