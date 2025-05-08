@@ -93,7 +93,6 @@ export default function Header() {
             Olá, {userName}
           </span>
         )}
-        <ThemeSwitch />
         <Link to="/config">
           <i>
             <Cog className="hover:rotate-90 hover:scale-105 transition-all ease-linear duration-200" />
@@ -105,6 +104,7 @@ export default function Header() {
         >
           Sair
         </Button>
+        <ThemeSwitch />
       </div>
     </header>
   );

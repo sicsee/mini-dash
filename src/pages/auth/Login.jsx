@@ -6,6 +6,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/supabase";
 import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -49,7 +50,6 @@ export default function Login() {
     }
   };
 
-  // Função de login com Google
   const handleGoogleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -66,88 +66,110 @@ export default function Login() {
   };
 
   return (
-    <section className="h-screen w-screen flex flex-col bg-azul-escuro relative overflow-hidden">
-      <div className="absolute top-6 left-6 z-20">
-        <Link to="/">
-          <h1 className="text-white font-bold text-2xl italic">
-            Mini Dash{" "}
-            <span className="text-azul-claro font-bold text-3xl rounded-full">
-              .
-            </span>
+    <main className="min-h-screen flex flex-col md:flex-row overflow-hidden">
+      <section className="flex-1 flex items-center justify-center p-6 bg-background">
+        <div className="w-full max-w-md space-y-6">
+          <Card className="w-full shadow-2xl border-none rounded-2xl">
+            <div className="flex justify-end px-10">
+              <Link to="/">
+                <IoMdClose
+                  size={35}
+                  className="font-thin text-black dark:text-white hover:text-zinc-400 dark:hover:text-zinc-400 transition-all ease-linear"
+                />
+              </Link>
+            </div>
+            <CardHeader className="text-3xl font-bold text-center text-zinc-800 dark:text-white">
+              Entre na sua conta
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">
+                    Email
+                  </label>
+                  <Input
+                    type="email"
+                    placeholder="email@email.com"
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">
+                    Senha
+                  </label>
+                  <Input
+                    type="password"
+                    placeholder="********"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="mt-1"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full flex items-center justify-center gap-3 mt-5 text-sm cursor-pointer"
+                >
+                  Entrar
+                </Button>
+                {error && (
+                  <p className="text-red-500 text-center font-medium">
+                    {error}
+                  </p>
+                )}
+                <div className="flex items-center gap-6">
+                  <Separator />
+                  <span className="text-xs text-muted-foreground">ou</span>
+                  <Separator />
+                </div>
+
+                <Button
+                  onClick={handleGoogleLogin}
+                  className="w-full flex items-center justify-center gap-3 mt-5 text-sm cursor-pointer"
+                >
+                  <img
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    alt="Google"
+                    className="h-5 w-5"
+                  />
+                  Entrar com Google
+                </Button>
+                <p className="text-sm text-center text-zinc-500 dark:text-zinc-400">
+                  Não tem uma conta?{" "}
+                  <Link
+                    to="/signup"
+                    className="text-azul-claro underline hover:opacity-90"
+                  >
+                    Faça o cadastro
+                  </Link>
+                </p>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+      <section className="bg-[url('./images/background.jpg')] bg-no-repeat bg-cover bg-center  relative flex-1 flex items-center justify-center text-white dark:text-black p-10 overflow-hidden m-2 rounded-xl">
+        <div className="z-10 max-w-md text-left">
+          <h1 className="text-4xl md:text-5xl font-light mb-4 text-center">
+            Entre na sua conta.
           </h1>
-        </Link>
-      </div>
+          <p className="text-lg md:text-xl">
+            Acesse seu painel e gerencie sua conta de forma rápida e segura!
+          </p>
+        </div>
 
-      <div className="absolute -top-10 -right-10 bg-azul-claro h-48 w-48 rounded-full blur-[100px] opacity-80 z-0"></div>
-      <div className="absolute bottom-0 left-0 bg-azul-claro h-48 w-48 rounded-full blur-[100px] opacity-80 z-0"></div>
-
-      <div className="flex flex-1 items-center justify-center">
-        <Card className="w-[350px] md:w-[450px] border-none shadow-none z-10">
-          <div className="flex justify-end px-10">
-            <Link to="/">
-              <IoMdClose
-                size={35}
-                className="font-thin hover:text-azul-claro transition-all ease-linear"
-              />
-            </Link>
-          </div>
-          <CardHeader className="text-2xl font-bold text-center">
-            Entre na sua conta
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="italic font-medium">Email</label>
-                <Input
-                  type="email"
-                  placeholder="email@email.com"
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="italic font-medium">Senha</label>
-                <Input
-                  type="password"
-                  placeholder="********"
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-
-              <p className="font-medium text-zinc-500 text-center mt-2">
-                <Link to="/senha" className="text-blue-600">
-                  Esqueceu sua senha?
-                </Link>
-              </p>
-
-              <Button
-                type="submit"
-                className="w-full bg-azul-claro hover:cursor-pointer hover:bg-azul-escuro dark:hover:bg-white dark:text-white dark:hover:text-azul-claro transition-all ease-linear duration-150"
-              >
-                Entrar
-              </Button>
-
-              {error && (
-                <p className="text-red-500 text-center font-medium">{error}</p>
-              )}
-            </form>
-
-            <button
-              onClick={handleGoogleLogin}
-              className="bg-white w-full flex items-center justify-center gap-3 py-2 px-4  rounded-md text-sm font-medium text-zinc-700 hover:bg-zinc-300 transition hover:cursor-pointer mt-5"
-            >
-              <img
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                alt="Google"
-                className="h-5 w-5"
-              />
-              Entrar com Google
-            </button>
-          </CardContent>
-        </Card>
-      </div>
-    </section>
+        <div className="absolute top-6 left-6 z-20">
+          <Link to="/">
+            <h1 className="text-white dark:text-black font-bold text-2xl italic">
+              Mini Dash{" "}
+              <span className="text-white dark:text-black font-bold text-3xl">
+                .
+              </span>
+            </h1>
+          </Link>
+        </div>
+      </section>
+    </main>
   );
 }

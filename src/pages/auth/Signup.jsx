@@ -6,18 +6,18 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/supabase";
 import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userName, setUserName] = useState(""); // Novo campo para o nome
+  const [userName, setUserName] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      // Cadastro
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -86,11 +86,26 @@ export default function Signup() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+
+    if (error) {
+      toast.error("Erro no login com Google: " + error.message);
+    } else {
+      toast.success("Login com Google realizado com sucesso!");
+    }
+  };
+
   return (
-    <main className="min-h-screen flex flex-col md:flex-row bg-azul-escuro overflow-hidden">
-      <section className="relative flex-1 flex items-center justify-center text-white p-10 overflow-hidden">
-        <div className="absolute -top-10 -right-10 h-56 w-56 bg-azul-claro rounded-full blur-[100px] opacity-70 z-0" />
-        <div className="absolute -bottom-20 left-0 h-56 w-56 bg-azul-claro rounded-full blur-[100px] opacity-70 z-0" />
+    <main className="min-h-screen flex flex-col md:flex-row overflow-hidden">
+      <section className="bg-[url('./images/background.jpg')] bg-no-repeat bg-cover bg-center  relative flex-1 flex items-center justify-center text-white dark:text-black p-10 overflow-hidden m-2 rounded-xl">
+        <div className="absolute -top-10 -right-10 h-56 w-56 rounded-full blur-[100px] opacity-70 z-0" />
+        <div className="absolute -bottom-20 left-0 h-56 w-56 rounded-full blur-[100px] opacity-70 z-0" />
         <div className="z-10 max-w-md text-left">
           <h1 className="text-4xl md:text-5xl font-light mb-4">Bem-vindo.</h1>
           <p className="text-lg md:text-xl">
@@ -100,9 +115,11 @@ export default function Signup() {
 
         <div className="absolute top-6 left-6 z-20">
           <Link to="/">
-            <h1 className="text-white font-bold text-2xl italic">
+            <h1 className="text-white dark:text-black font-bold text-2xl italic">
               Mini Dash{" "}
-              <span className="text-azul-claro font-bold text-3xl">.</span>
+              <span className="text-white dark:text-black font-bold text-3xl">
+                .
+              </span>
             </h1>
           </Link>
         </div>
@@ -115,7 +132,7 @@ export default function Signup() {
               <Link to="/">
                 <IoMdClose
                   size={35}
-                  className="font-thin hover:text-azul-claro transition-all ease-linear"
+                  className="font-thin text-black dark:text-white transition-all ease-linear"
                 />
               </Link>
             </div>
@@ -136,7 +153,6 @@ export default function Signup() {
                     className="mt-1"
                   />
                 </div>
-
                 <div>
                   <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">
                     Email
@@ -149,7 +165,6 @@ export default function Signup() {
                     className="mt-1"
                   />
                 </div>
-
                 <div>
                   <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">
                     Senha
@@ -162,20 +177,34 @@ export default function Signup() {
                     className="mt-1"
                   />
                 </div>
-
                 <Button
                   type="submit"
-                  className="w-full bg-azul-claro hover:bg-azul-escuro hover:cursor-pointer text-white dark:hover:bg-white dark:hover:text-azul-claro font-semibold py-2 rounded-md transition-all"
+                  className="w-full flex items-center justify-center gap-3 mt-5 text-sm cursor-pointer"
                 >
                   Criar conta
                 </Button>
-
                 {error && (
                   <p className="text-red-500 text-center font-medium">
                     {error}
                   </p>
                 )}
+                <div className="flex items-center gap-6">
+                  <Separator />
+                  <span className="text-xs text-muted-foreground">ou</span>
+                  <Separator />
+                </div>
 
+                <Button
+                  onClick={handleGoogleLogin}
+                  className="w-full flex items-center justify-center gap-3 mt-5 text-sm cursor-pointer"
+                >
+                  <img
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    alt="Google"
+                    className="h-5 w-5"
+                  />
+                  Entrar com Google
+                </Button>
                 <p className="text-sm text-center text-zinc-500 dark:text-zinc-400">
                   Já tem uma conta?{" "}
                   <Link

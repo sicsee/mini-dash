@@ -1,23 +1,56 @@
 import ThemeSwitch from "@/components/Switch";
 import { Globe, BarChart2, CheckCircle, UserCheck } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/supabase";
+import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user || null);
+    };
+
+    getUser();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
   return (
-    <main className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white flex flex-col">
-      <header className="items-center flex justify-between px-20 h-15 shadow">
+    <main className="min-h-screen bg-white dark:bg-zinc-900 text-black dark:text-white flex flex-col">
+      <header className="flex justify-between items-center px-6 md:px-20 py-4 border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
         <div className="flex items-center gap-2">
-          <Globe size={26} className="text-azul-claro" />
+          <Globe size={26} className="text-black dark:text-white" />
           <h1 className="font-bold text-2xl italic">Mini Dash</h1>
         </div>
 
         <div className="flex items-center gap-4">
+          {user ? (
+            <Button asChild>
+              <Link to="/dashboard">Dashboard</Link>
+            </Button>
+          ) : (
+            <>
+              <Button variant="outline" asChild>
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/signup">Criar Conta</Link>
+              </Button>
+            </>
+          )}
           <ThemeSwitch />
-          <Link to="/login">
-            <button className="bg-azul-claro text-white px-4 py-[2px] rounded-lg hover:bg-azul-escuro dark:hover:bg-white dark:text-white dark:hover:text-azul-claro transition text-lg hover:cursor-pointer">
-              Login
-            </button>
-          </Link>
         </div>
       </header>
 
@@ -25,15 +58,13 @@ export default function LandingPage() {
         <h2 className="text-4xl md:text-6xl font-bold mb-6 max-w-3xl">
           Gerencie seus dados
         </h2>
-        <p className="text-lg md:text-lg text-zinc-500 dark:text-zinc-400 mb-8 max-w-xl">
+        <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl">
           Um sistema simples de gerenciamento pessoal com um dashboard do seu
           jeito.
         </p>
-        <Link to="/signup">
-          <button className="bg-azul-claro text-white px-4 py-2 rounded-lg hover:bg-azul-escuro transition text-lg hover:cursor-pointer dark:hover:bg-white dark:text-white dark:hover:text-azul-claro">
-            Começar Agora
-          </button>
-        </Link>
+        <Button asChild>
+          <Link to="/signup">Começar Agora</Link>
+        </Button>
       </section>
 
       <section
@@ -42,22 +73,31 @@ export default function LandingPage() {
       >
         <h3 className="text-3xl font-semibold mb-8">Como funciona?</h3>
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="shadow-lg rounded-2xl">
-            <CheckCircle className="mx-auto text-azul-claro" size={40} />
+          <div className="bg-white dark:bg-zinc-800 p-6 rounded-2xl shadow">
+            <CheckCircle
+              className="mx-auto text-black dark:text-white"
+              size={40}
+            />
             <h4 className="text-xl font-medium mt-4">Cadastro simples</h4>
             <p className="text-zinc-500 dark:text-zinc-400 mt-2 mb-3">
               Crie sua conta em poucos cliques e comece a organizar seus dados.
             </p>
           </div>
-          <div className="shadow-lg rounded-2xl">
-            <BarChart2 className="mx-auto text-azul-claro" size={40} />
+          <div className="bg-white dark:bg-zinc-800 p-6 rounded-2xl shadow">
+            <BarChart2
+              className="mx-auto text-black dark:text-white"
+              size={40}
+            />
             <h4 className="text-xl font-medium mt-4">Dashboard completo</h4>
             <p className="text-zinc-500 dark:text-zinc-400 mt-2 mb-3">
               Visualize informações importantes em um painel intuitivo.
             </p>
           </div>
-          <div className="shadow-lg rounded-2xl">
-            <UserCheck className="mx-auto text-azul-claro" size={40} />
+          <div className="bg-white dark:bg-zinc-800 p-6 rounded-2xl shadow">
+            <UserCheck
+              className="mx-auto text-black dark:text-white"
+              size={40}
+            />
             <h4 className="text-xl font-medium mt-4">
               Gerencie com facilidade
             </h4>
@@ -94,13 +134,13 @@ export default function LandingPage() {
 
       <footer className="text-center py-8 text-sm text-zinc-800 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-700 mt-10">
         <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-4">
-          <Link href="/sobre" className="hover:underline">
+          <Link to="/sobre" className="hover:underline">
             Sobre
           </Link>
-          <Link href="/contato" className="hover:underline">
+          <Link to="/contato" className="hover:underline">
             Contato
           </Link>
-          <Link href="/termos" className="hover:underline">
+          <Link to="/termos" className="hover:underline">
             Termos de Uso
           </Link>
         </div>
