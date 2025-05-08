@@ -29,10 +29,12 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen bg-white dark:bg-zinc-900 text-black dark:text-white flex flex-col">
-      <header className="flex justify-between items-center px-6 md:px-20 py-4 border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+      <header className="flex sm:justify-between space-x-4 justify-center items-center px-6 md:px-20 py-4 border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
         <div className="flex items-center gap-2">
-          <Globe size={26} className="text-black dark:text-white" />
-          <h1 className="font-bold text-2xl italic">Mini Dash</h1>
+          <Globe className="text-black dark:text-white size-8 md:size-9" />
+          <h1 className="font-bold hidden text-2xl md:block italic">
+            Mini Dash
+          </h1>
         </div>
 
         <div className="flex items-center gap-4">

@@ -28,7 +28,8 @@ export default function Login() {
           style: {
             backgroundColor: "red",
             color: "white",
-            fontFamily: "JetBrains Mono",
+            fontFamily: "Poppins",
+            fontWeight: "bolder",
             border: "none",
           },
         });
@@ -36,10 +37,8 @@ export default function Login() {
         toast.success("Login feito com sucesso!", {
           duration: 3000,
           style: {
-            backgroundColor: "green",
-            color: "white",
-            fontFamily: "JetBrains Mono",
-            border: "none",
+            fontFamily: "Poppins",
+            fontWeight: "bolder",
           },
         });
         navigate("/dashboard");
@@ -149,7 +148,7 @@ export default function Login() {
           </Card>
         </div>
       </section>
-      <section className="bg-[url('./images/background.jpg')] bg-no-repeat bg-cover bg-center  relative flex-1 flex items-center justify-center text-white dark:text-black p-10 overflow-hidden m-2 rounded-xl">
+      <section className="bg-[url('./images/bg-black.jpg')] dark:bg-[url('./images/bg-white.jpg')] bg-no-repeat bg-cover bg-center  relative flex-1 items-center justify-center text-white dark:text-black p-10 overflow-hidden m-2 rounded-xl hidden md:flex">
         <div className="z-10 max-w-md text-left">
           <h1 className="text-4xl md:text-5xl font-light mb-4 text-center">
             Entre na sua conta.

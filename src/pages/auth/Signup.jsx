@@ -35,7 +35,7 @@ export default function Signup() {
           style: {
             backgroundColor: "red",
             color: "white",
-            fontFamily: "JetBrains Mono",
+            fontFamily: "Poppins",
             border: "none",
           },
         });
@@ -48,7 +48,7 @@ export default function Signup() {
           style: {
             backgroundColor: "red",
             color: "white",
-            fontFamily: "JetBrains Mono",
+            fontFamily: "Poppins",
             border: "none",
           },
         });
@@ -61,8 +61,8 @@ export default function Signup() {
           duration: 3000,
           style: {
             backgroundColor: "red",
+            fontFamily: "Poppins",
             color: "white",
-            fontFamily: "JetBrains Mono",
             border: "none",
           },
         });
@@ -72,10 +72,8 @@ export default function Signup() {
       toast.success("Cadastro feito com sucesso!", {
         duration: 3000,
         style: {
-          backgroundColor: "green",
-          color: "white",
-          fontFamily: "JetBrains Mono",
-          border: "none",
+          fontFamily: "Poppins",
+          fontWeight: "bolder",
         },
       });
 
@@ -103,7 +101,7 @@ export default function Signup() {
 
   return (
     <main className="min-h-screen flex flex-col md:flex-row overflow-hidden">
-      <section className="bg-[url('./images/background.jpg')] bg-no-repeat bg-cover bg-center  relative flex-1 flex items-center justify-center text-white dark:text-black p-10 overflow-hidden m-2 rounded-xl">
+      <section className="bg-[url('./images/bg-black.jpg')] dark:bg-[url('./images/bg-white.jpg')] bg-no-repeat bg-cover bg-center  relative flex-1 items-center justify-center text-white dark:text-black p-10 overflow-hidden m-2 rounded-xl hidden md:flex">
         <div className="absolute -top-10 -right-10 h-56 w-56 rounded-full blur-[100px] opacity-70 z-0" />
         <div className="absolute -bottom-20 left-0 h-56 w-56 rounded-full blur-[100px] opacity-70 z-0" />
         <div className="z-10 max-w-md text-left">

@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
-import Dashboard from "@/pages/Dashboard/Dashboard";
+import Dashboard from "@/pages/Dashboard/Page";
 import LandingPage from "@/pages/Landing";
 
 import PublicRoute from "@/routes/PublicRoute";

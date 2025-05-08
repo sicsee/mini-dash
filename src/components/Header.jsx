@@ -46,10 +46,8 @@ export default function Header() {
       toast.success("Você foi desconectado com sucesso! ", {
         duration: 3000,
         style: {
-          backgroundColor: "green",
-          color: "white",
-          fontFamily: "JetBrains Mono",
-          border: "none",
+          fontFamily: "Poppins",
+          fontWeight: "bolder",
         },
       });
 
@@ -65,7 +63,7 @@ export default function Header() {
       <div className="flex items-center gap-2">
         <Globe size={26} className="text-azul-claro" />
         <Link to="/">
-          <h1 className=" font-bold text-2xl italic">
+          <h1 className=" font-bold font-lg md:text-2xl italic">
             Mini Dash{" "}
             <span className="text-azul-claro font-bold text-3xl rounded-full">
               .
