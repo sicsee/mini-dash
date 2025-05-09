@@ -58,15 +58,23 @@ export default function LandingPage() {
 
       <section className="flex-1 flex flex-col items-center justify-center text-center px-6 py-20">
         <h2 className="text-4xl md:text-6xl font-bold mb-6 max-w-3xl">
-          Gerencie seus dados
+          Gerencie suas vendas
         </h2>
         <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl">
-          Um sistema simples de gerenciamento pessoal com um dashboard do seu
-          jeito.
+          Um sistema simples e eficaz de gerenciamento de vendas e produtos com
+          um dashboard completo.
         </p>
-        <Button asChild>
-          <Link to="/signup">Começar Agora</Link>
-        </Button>
+        {user ? (
+          <Button asChild>
+            <Link to="/dashboard">Dashboard</Link>
+          </Button>
+        ) : (
+          <>
+            <Button asChild>
+              <Link to="/signup">Criar Conta</Link>
+            </Button>
+          </>
+        )}
       </section>
 
       <section

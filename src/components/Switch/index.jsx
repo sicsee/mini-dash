@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Toggle } from "./ui/toggle";
+import { Toggle } from "../ui/toggle";
 
 const ThemeSwitch = () => {
   const [dark, setDark] = useState(false);
@@ -30,9 +30,13 @@ const ThemeSwitch = () => {
       aria-label="Alternar tema"
       pressed={dark}
       className={`
-        h-9 w-9 p-2 rounded-md border 
-        transition-colors duration-200
-        ${dark ? "bg-muted text-muted-foreground" : "bg-white text-foreground"}
+        h-9 w-9 p-2 rounded-md  
+        transition-colors duration-200 cursor-pointer
+        ${
+          dark
+            ? "bg-muted text-muted-foreground"
+            : "bg-white text-foreground border border-gray-200"
+        }
       `}
     >
       {dark ? (
