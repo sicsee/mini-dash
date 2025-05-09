@@ -21,6 +21,8 @@ import ThemeSwitch from "../Switch";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/supabase";
+import { Avatar } from "@radix-ui/react-avatar";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -44,7 +46,7 @@ export function Sidebar() {
     }
   };
   return (
-    <div className="flex w-full flex-col bg-muted/40">
+    <div className="flex w-full sm:w-0 flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col ">
         <nav className="flex flex-col items-center gap-4 px-2 py-5">
           <TooltipProvider>
@@ -59,7 +61,7 @@ export function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="#"
+                  to=""
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <Home className="h-5 w-5" />
@@ -72,7 +74,7 @@ export function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="#"
+                  to="estoque"
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <Archive className="h-5 w-5" />
@@ -85,7 +87,7 @@ export function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to="produtos"
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <Package className="w-5 h-5 " />
@@ -98,7 +100,7 @@ export function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to="clientes"
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <User className="w-5 h-5 " />
@@ -111,7 +113,7 @@ export function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to="settings"
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <Settings2 className="w-5 h-5" />
