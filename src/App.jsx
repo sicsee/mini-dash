@@ -7,10 +7,10 @@ import LandingPage from "@/pages/Landing";
 
 import PublicRoute from "@/routes/PublicRoute";
 import PrivateRoute from "@/routes/PrivateRoute";
-import { Clientes } from "./pages/Dashboard/clientes/page";
-import { Estoque } from "./pages/Dashboard/estoque/page";
-import { Produtos } from "./pages/Dashboard/produtos/page";
-import { Settings } from "./pages/Dashboard/configuracao/page";
+import Clientes from "@/pages/Dashboard/clientes/page";
+import Estoque from "@/pages/Dashboard/estoque/page";
+import Produtos from "./pages/Dashboard/produtos/page";
+import Settings from "./pages/Dashboard/configuracao/page";
 import DashboardHome from "./pages/Dashboard/home/page";
 
 export default function App() {

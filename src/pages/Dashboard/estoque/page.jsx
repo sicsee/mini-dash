@@ -1,7 +1,13 @@
-export function Estoque() {
+import React from "react";
+
+function Estoque() {
   return (
-    <>
-      <h1>Estoque</h1>
-    </>
+    <main>
+      <section>
+        <h1>Aqui é o estoque</h1>
+      </section>
+    </main>
   );
 }
+
+export default Estoque;

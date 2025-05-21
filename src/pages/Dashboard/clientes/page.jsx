@@ -1,7 +1,13 @@
-export function Clientes() {
+import React from "react";
+
+function Clientes() {
   return (
-    <>
-      <h1>Clientes</h1>
-    </>
+    <main>
+      <section>
+        <h1>Aqui é o estoque</h1>
+      </section>
+    </main>
   );
 }
+
+export default Clientes;
