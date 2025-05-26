@@ -40,7 +40,7 @@ export default function DashboardLayout() {
       <Sidebar />
       <main className="ml-1 sm:ml-14 p-4 w-[cal(100% - 56px)] flex flex-col transition-all">
         {userName && (
-          <div className="mt-2 mb-5">
+          <div className="mt-1 mb-2">
             <span className="text-xl italic text-foreground font-bold">
               Olá, {userName}
             </span>
