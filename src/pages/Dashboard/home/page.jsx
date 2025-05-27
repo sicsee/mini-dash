@@ -9,11 +9,50 @@ import { DollarSign, Users, Percent, BadgeDollarSign } from "lucide-react";
 import MyChart from "@/components/Chart";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { useEffect, useState } from "react";
+import { supabase } from "@/supabase";
 
 export default function Dashboard() {
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
+
+      if (userError || !userData?.user?.id) {
+        console.error("Erro ao obter o usuário:", userError?.message);
+        return;
+      }
+
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("id", userData.user.id)
+        .single();
+
+      if (profileError) {
+        console.error("Erro ao buscar o nome do perfil:", profileError.message);
+      }
+
+      if (profileData?.name) {
+        setUserName(profileData.name);
+      }
+    };
+
+    fetchUserName();
+  }, []);
+
   return (
     <>
       <main>
+        {userName && (
+          <div className="mt-1 mb-2">
+            <span className="text-xl italic text-foreground font-bold">
+              Olá, {userName}
+            </span>
+          </div>
+        )}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
             <CardHeader>
