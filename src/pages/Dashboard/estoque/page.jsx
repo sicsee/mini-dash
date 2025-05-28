@@ -1,10 +1,10 @@
-import React from "react";
+import StockList from "@/components/Estoque";
 
 function Estoque() {
   return (
     <main>
-      <section>
-        <h1>Aqui é o estoque</h1>
+      <section className="mt-4">
+        <StockList />
       </section>
     </main>
   );

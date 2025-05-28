@@ -157,7 +157,7 @@ export function Sidebar() {
             <SheetContent side="left" className="sm:max-w-x">
               <nav className="grid gap-6 text-lg font-medium p-3">
                 <Link
-                  href="#"
+                  to="/"
                   className="flex h-10 w-10 bg-primary rounded-full items-center justify-center text-primary-foreground md:text-base gap-2"
                   prefetch={false}
                 >
@@ -166,7 +166,7 @@ export function Sidebar() {
                 </Link>
 
                 <Link
-                  href="#"
+                  to="/dashboard"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                   prefetch={false}
                 >
@@ -175,7 +175,7 @@ export function Sidebar() {
                 </Link>
 
                 <Link
-                  href="#"
+                  to="estoque"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                   prefetch={false}
                 >
@@ -184,7 +184,7 @@ export function Sidebar() {
                 </Link>
 
                 <Link
-                  href="#"
+                  to="produtos"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                   prefetch={false}
                 >
@@ -193,7 +193,7 @@ export function Sidebar() {
                 </Link>
 
                 <Link
-                  href="#"
+                  to="clientes"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                   prefetch={false}
                 >
@@ -202,7 +202,7 @@ export function Sidebar() {
                 </Link>
 
                 <Link
-                  href="#"
+                  to="settings"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                   prefetch={false}
                 >

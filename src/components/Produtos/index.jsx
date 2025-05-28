@@ -1,7 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/supabase";
 import { toast } from "sonner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Box,
+  Package,
   ChevronsDown,
   ChevronLeft,
   ChevronRight,
@@ -251,21 +257,25 @@ export default function ProductList() {
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
       <Card className="mb-5">
         <CardHeader>
           <div className="flex items-center justify-center">
-            <CardTitle className="text-lg sm:text-xl text-black dark:text-white select-none">
-              Total de produtos:
-            </CardTitle>
-            <Box className="ml-auto w-6 h-6" />
+            <div className="flex flex-col">
+              <CardTitle className="text-lg sm:text-xl text-black dark:text-white select-none">
+                Total de Produtos:
+              </CardTitle>
+              <CardDescription>
+                Capacidade máxima de 15 produtos
+              </CardDescription>
+            </div>
+            <Package className="ml-auto w-6 h-6" />
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-lg sm:text-xl font-bold">{products.length}</p>
+          <p className="text-lg sm:text-xl font-bold">{products.length} / 15</p>
         </CardContent>
       </Card>
-
       <div className="flex flex-col sm:flex-row mb-6 gap-4 items-center justify-between">
         <FilterInput
           icon={SearchIcon}
@@ -284,7 +294,6 @@ export default function ProductList() {
           Novo Produto
         </Button>
       </div>
-
       {loading ? (
         <LoadingSpinner />
       ) : filteredProducts.length === 0 ? (
@@ -356,28 +365,30 @@ export default function ProductList() {
           </table>
         </div>
       )}
+      {/* Paginação */}
 
       {/* Paginação */}
-      <div className="flex justify-center space-x-2 mt-4">
-        <Button
-          size="sm"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-        >
-          <ChevronLeft />
-        </Button>
-        <span className="px-4 py-2 select-none">
-          Página {currentPage} de {totalPages}
-        </span>
-        <Button
-          size="sm"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-        >
-          <ChevronRight />
-        </Button>
-      </div>
-
+      {filteredProducts.length > 0 && totalPages > 1 && (
+        <div className="flex justify-center space-x-2 mt-4">
+          <Button
+            size="sm"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+          >
+            <ChevronLeft />
+          </Button>
+          <span className="px-4 py-2 select-none">
+            Página {currentPage} de {totalPages}
+          </span>
+          <Button
+            size="sm"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+          >
+            <ChevronRight />
+          </Button>
+        </div>
+      )}
       {/* Modal Criar/Editar */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-lg">
