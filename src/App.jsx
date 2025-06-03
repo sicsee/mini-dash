@@ -15,41 +15,43 @@ import DashboardHome from "./pages/Dashboard/home/page";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
+    <div className=" bg-white dark:bg-black">
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
 
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
 
-      <Route
-        path="/signup"
-        element={
-          <PublicRoute>
-            <Signup />
-          </PublicRoute>
-        }
-      />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          }
+        />
 
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute>
-            <DashboardLayout />
-          </PrivateRoute>
-        }
-      >
-        <Route index element={<DashboardHome />} />
-        <Route path="estoque" element={<Estoque />} />
-        <Route path="clientes" element={<Clientes />} />
-        <Route path="produtos" element={<Produtos />} />
-        <Route path="settings" element={<Settings />} />
-      </Route>
-    </Routes>
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <DashboardLayout />
+            </PrivateRoute>
+          }
+        >
+          <Route index element={<DashboardHome />} />
+          <Route path="estoque" element={<Estoque />} />
+          <Route path="clientes" element={<Clientes />} />
+          <Route path="produtos" element={<Produtos />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
+      </Routes>
+    </div>
   );
 }

@@ -1,10 +1,11 @@
+import CustomerList from "@/components/Clientes";
 import React from "react";
 
 function Clientes() {
   return (
     <main>
       <section>
-        <h1>Aqui é o estoque</h1>
+        <CustomerList />
       </section>
     </main>
   );

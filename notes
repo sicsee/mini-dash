@@ -1,0 +1,111 @@
+<section class="flex items-center pt-36 md:pt-36 overflow-hidden" id="home">
+  <div class="container px-4 mx-auto relative">
+    <div class="max-w-6xl mx-auto text-center">
+      <div
+        class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500/20 to-emerald-500/10 rounded-full px-4 py-2 mb-6 border border-emerald-500/20 shadow-sm hover:border-emerald-500/30 transition-all duration-300"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-sparkles h-4 w-4 text-emerald-500"
+        >
+          <path
+            d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"
+          ></path>
+          <path d="M20 3v4"></path>
+          <path d="M22 5h-4"></path>
+          <path d="M4 17v2"></path>
+          <path d="M5 18H3"></path></svg
+        ><span class="text-sm font-semibold text-emerald-500"
+          >30 dias grátis para testar</span
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-sparkles h-4 w-4 text-emerald-500"
+        >
+          <path
+            d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"
+          ></path>
+          <path d="M20 3v4"></path>
+          <path d="M22 5h-4"></path>
+          <path d="M4 17v2"></path>
+          <path d="M5 18H3"></path>
+        </svg>
+      </div>
+      <h1
+        class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 md:mb-8 drop-shadow-sm"
+      >
+        Transforme seu negócio com o Agendei
+      </h1>
+      <p
+        class="text-base md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-2xl mx-auto font-medium px-4"
+      >
+        Sistema completo de agendamento online que ajuda profissionais a
+        organizarem suas agendas, reduzirem faltas e
+        <span class="text-primary font-semibold"
+          >aumentarem seus resultados</span
+        >
+      </p>
+      <div
+        class="flex flex-col sm:flex-row gap-4 justify-center mb-12 md:mb-16 px-4"
+      >
+        <button
+          data-slot="button"
+          class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 h-10 has-[>svg]:px-4 group cursor-pointer w-full sm:w-auto text-sm md:text-base py-4 md:py-6 px-8 md:px-12 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+        >
+          Começar teste grátis<svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-arrow-right ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform"
+          >
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg></button
+        ><button
+          data-slot="button"
+          class="inline-flex items-center justify-center gap-2 whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 has-[>svg]:px-3 w-full sm:w-[14rem] md:w-[16rem] group cursor-pointer text-base md:text-lg font-medium px-6 md:px-8 py-5 md:py-6 rounded-xl border-border/50 hover:border-emerald-500/20 hover:bg-emerald-500/5 transition-all duration-300"
+        >
+          Conhecer recursos
+        </button>
+      </div>
+      <div
+        class="relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20"
+      >
+        <div
+          aria-hidden="true"
+          class="bg-gradient-to-b from-transparent via-background/50 to-background absolute inset-0 z-10"
+        ></div>
+        <div
+          class="relative mx-auto max-w-6xl overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-xl shadow-lg"
+        >
+          <img
+            alt="Dashboard"
+            class="border border-border/50 rounded-xl"
+            src="/assets/dashboard-desktop-dark-C6NtmbEj.webp"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

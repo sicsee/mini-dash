@@ -7,7 +7,7 @@ export default function DashboardLayout() {
   return (
     <div className="flex-col sm:flex">
       <Sidebar />
-      <main className="ml-1 sm:ml-14 p-4 w-[cal(100% - 56px)] flex flex-col transition-all">
+      <main className="ml-1 sm:ml-14 p-4 w-[cal(100% - 56px)] flex flex-col transition-all bg-background">
         <Outlet />
       </main>
     </div>

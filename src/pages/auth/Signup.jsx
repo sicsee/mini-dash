@@ -11,27 +11,44 @@ import { Separator } from "@/components/ui/separator";
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userName, setUserName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Seu componente de cadastro
   const handleSignup = async (e) => {
     e.preventDefault();
+    setError(""); // Limpa erros anteriores
+
+    if (!email || !password || !firstName) {
+      toast.error("Por favor, preencha todos os campos obrigatórios.", {
+        duration: 3000,
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          fontFamily: "Poppins",
+          border: "none",
+        },
+      });
+      return;
+    }
+
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            display_name: userName,
+            first_name: firstName, // Isso vai para user_metadata no auth.users
+            last_name: lastName || null, // Se você tiver um campo para sobrenome
           },
         },
       });
-      const user = data?.user;
 
-      if (error) {
-        toast.error("Erro no cadastro: " + error.message, {
-          duration: 3000,
+      if (authError) {
+        toast.error("Erro no cadastro de usuário: " + authError.message, {
+          duration: 4000,
           style: {
             backgroundColor: "red",
             color: "white",
@@ -42,45 +59,35 @@ export default function Signup() {
         return;
       }
 
-      if (!user || !user.id || !userName) {
-        toast.error("Dados do usuário ou nome inválidos!", {
+      if (
+        authData.user &&
+        authData.user.identities &&
+        authData.user.identities.length === 0
+      ) {
+        toast.info(
+          "Verifique seu e-mail para confirmar a conta antes de fazer login.",
+          { duration: 5000 }
+        );
+        navigate("/check-email"); // Redireciona para uma página de sucesso ou instrução
+      } else {
+        toast.success("Cadastro realizado com sucesso! Redirecionando...", {
           duration: 3000,
-          style: {
-            backgroundColor: "red",
-            color: "white",
-            fontFamily: "Poppins",
-            border: "none",
-          },
+          style: { fontFamily: "Poppins", fontWeight: "bolder" },
         });
-        return;
+        navigate("/dashboard"); // Redireciona para o dashboard
       }
-
-      if (profileError) {
-        console.error("Erro ao inserir no perfil:", profileError);
-        toast.error("Erro ao criar perfil: " + profileError.message, {
-          duration: 3000,
-          style: {
-            backgroundColor: "red",
-            fontFamily: "Poppins",
-            color: "white",
-            border: "none",
-          },
-        });
-        return;
-      }
-
-      toast.success("Cadastro feito com sucesso!", {
-        duration: 3000,
-        style: {
-          fontFamily: "Poppins",
-          fontWeight: "bolder",
-        },
-      });
-
-      navigate("/dashboard");
     } catch (err) {
-      console.error(err);
-      setError("Erro ao fazer cadastro. Tente novamente.");
+      console.error("Erro geral no processo de cadastro:", err);
+      setError("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+      toast.error("Erro inesperado: " + err.message, {
+        duration: 5000,
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          fontFamily: "Poppins",
+          border: "none",
+        },
+      });
     }
   };
 
@@ -139,17 +146,32 @@ export default function Signup() {
             </CardHeader>
             <CardContent className="space-y-6">
               <form onSubmit={handleSignup} className="space-y-4">
-                <div>
-                  <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">
-                    Nome
-                  </label>
-                  <Input
-                    type="text"
-                    placeholder="Seu nome"
-                    onChange={(e) => setUserName(e.target.value)}
-                    required
-                    className="mt-1"
-                  />
+                <div className="inline-flex gap-5">
+                  <div>
+                    <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">
+                      Nome
+                    </label>
+
+                    <Input
+                      type="text"
+                      placeholder="Seu primeiro nome"
+                      onChange={(e) => setFirstName(e.target.value)}
+                      required
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">
+                      Sobrenome
+                    </label>
+                    <Input
+                      type="text"
+                      placeholder="Seu sobrenome"
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="italic font-medium text-sm text-zinc-600 dark:text-zinc-300">

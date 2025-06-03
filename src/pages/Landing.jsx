@@ -1,143 +1,176 @@
-import ThemeSwitch from "@/components/Switch";
-import { Globe, BarChart2, CheckCircle, UserCheck } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/supabase";
 import { Button } from "@/components/ui/button";
+import HeaderLanding from "@/components/LandingPage/header";
+import { UserCheck, BarChart2, CheckCircle } from "lucide-react";
+
+import backgroundImage from "/images/bg-land.png";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function LandingPage() {
   const [user, setUser] = useState(null);
+  const [showIntroAnimation, setShowIntroAnimation] = useState(true);
+  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+  const [animationStarted, setAnimationStarted] = useState(false);
 
   useEffect(() => {
-    const getUser = async () => {
+    const img = new Image();
+    img.src = backgroundImage;
+
+    const handleLoad = () => {
+      setBackgroundLoaded(true);
+    };
+
+    img.onload = handleLoad;
+
+    if (img.complete) {
+      handleLoad();
+    }
+  }, []);
+
+  useEffect(() => {
+    let timeoutId;
+    if (backgroundLoaded && !animationStarted) {
+      setAnimationStarted(true);
+
+      timeoutId = setTimeout(() => {
+        setShowIntroAnimation(false);
+      }, 500); // 500ms antes da vinheta começar a desaparecer
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [backgroundLoaded, animationStarted]);
+
+  useEffect(() => {
+    const getUserSession = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data?.user || null);
     };
 
-    getUser();
+    getUserSession();
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
+    const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user || null);
       }
     );
 
     return () => {
-      listener.subscription.unsubscribe();
+      authListener.subscription.unsubscribe();
     };
   }, []);
 
-  return (
-    <main className="min-h-screen bg-white dark:bg-zinc-900 text-black dark:text-white flex flex-col">
-      <header className="flex sm:justify-between space-x-4 justify-center items-center px-6 md:px-20 py-4 border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-        <div className="flex items-center gap-2">
-          <Globe className="text-black dark:text-white size-8 md:size-9" />
-          <h1 className="font-bold hidden text-2xl md:block italic">
-            Mini Dash
-          </h1>
-        </div>
+  const contentInitialClasses = `${
+    !backgroundLoaded || !animationStarted ? "opacity-0-initial" : ""
+  }`;
 
-        <div className="flex items-center gap-4">
+  return (
+    <main className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden">
+      {showIntroAnimation && (
+        <div
+          className={`fixed inset-0 bg-black z-50 animate-fade-out-bg`}
+          style={{ pointerEvents: "none" }}
+        ></div>
+      )}
+
+      <HeaderLanding />
+
+      <section className="flex flex-col items-center justify-center relative p-4 h-screen overflow-hidden">
+        <div
+          className={`absolute inset-0 bg-no-repeat bg-cover bg-center 
+                      ${contentInitialClasses} 
+                      ${
+                        backgroundLoaded && animationStarted
+                          ? "animate-zoom-out-bg"
+                          : ""
+                      }`}
+          style={{ backgroundImage: `url(${backgroundImage})` }}
+        ></div>
+
+        <div className="max-w-3xl w-full relative z-10 flex items-center flex-col text-center">
+          <h2
+            className={`text-4xl md:text-6xl font-bold mb-6 text-white font-bodoni ${
+              animationStarted
+                ? "animate-slide-in-bottom animate-delay-900"
+                : ""
+            }`}
+          >
+            Mini Dash
+          </h2>
+          <p
+            className={`text-lg text-zinc-100 mb-8 max-w-xl mx-auto ${
+              animationStarted
+                ? "animate-slide-in-bottom animate-delay-900"
+                : ""
+            }`}
+          >
+            Um sistema simples e eficaz de gerenciamento de vendas e produtos
+            com um dashboard completo.
+          </p>
           {user ? (
-            <Button asChild>
+            <Button
+              asChild
+              className={`${
+                animationStarted
+                  ? "animate-slide-in-bottom animate-delay-900"
+                  : ""
+              }`}
+            >
               <Link to="/dashboard">Dashboard</Link>
             </Button>
           ) : (
             <>
-              <Button variant="outline" asChild>
-                <Link to="/login">Login</Link>
-              </Button>
-              <Button asChild>
+              <Button
+                asChild
+                className={` ${
+                  animationStarted
+                    ? "animate-slide-in-bottom animate-delay-900 "
+                    : ""
+                }`}
+              >
                 <Link to="/signup">Criar Conta</Link>
               </Button>
             </>
           )}
-          <ThemeSwitch />
         </div>
-      </header>
+      </section>
 
-      <section className="flex-1 flex flex-col items-center justify-center text-center px-6 py-20">
-        <h2 className="text-4xl md:text-6xl font-bold mb-6 max-w-3xl">
-          Gerencie suas vendas
-        </h2>
-        <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl">
-          Um sistema simples e eficaz de gerenciamento de vendas e produtos com
-          um dashboard completo.
+      <section className="p-8 flex flex-col text-center space-y-10 mt-5 items-center relative">
+        <div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-medium sm:font-bold">
+            Visão Clara, Decisões Inteligentes
+          </h1>
+          <p className="text-sm sm:text-base text-zinc-400">
+            Seu Dashboard Completo em Um Piscar de Olhos
+          </p>
+        </div>
+
+        <p className="text-base sm:text-lg text-center w-full max-w-4xl ">
+          Explore o poder do Mini Dash com nosso painel intuitivo. Tenha dados
+          de vendas, estoque e clientes centralizados para decisões rápidas e
+          eficazes, tudo em um só lugar.
         </p>
-        {user ? (
-          <Button asChild>
-            <Link to="/dashboard">Dashboard</Link>
-          </Button>
-        ) : (
-          <>
-            <Button asChild>
-              <Link to="/signup">Criar Conta</Link>
-            </Button>
-          </>
-        )}
-      </section>
 
-      <section
-        id="funcionamento"
-        className="py-20 bg-zinc-100 dark:bg-zinc-900 text-center px-6"
-      >
-        <h3 className="text-3xl font-semibold mb-8">Como funciona?</h3>
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="bg-white dark:bg-zinc-800 p-6 rounded-2xl shadow">
-            <CheckCircle
-              className="mx-auto text-black dark:text-white"
-              size={40}
+        <div class="relative -mr-56 overflow-hidden px-2 sm:mr-0 mt-10">
+          <div
+            aria-hidden="true"
+            class="bg-gradient-to-b from-transparent via-black/50 to-black absolute inset-0 z-10"
+          ></div>
+          <div class="relative mx-auto max-w-6xl overflow-hidden rounded-2xl border border- bg-gradient-to-br from-black/80 to-black/60 shadow-lg">
+            <img
+              alt="Dashboard"
+              class="border border-border/50 rounded-xl"
+              src="/images/Dash.png"
             />
-            <h4 className="text-xl font-medium mt-4">Cadastro simples</h4>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-2 mb-3">
-              Crie sua conta em poucos cliques e comece a organizar seus dados.
-            </p>
-          </div>
-          <div className="bg-white dark:bg-zinc-800 p-6 rounded-2xl shadow">
-            <BarChart2
-              className="mx-auto text-black dark:text-white"
-              size={40}
-            />
-            <h4 className="text-xl font-medium mt-4">Dashboard completo</h4>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-2 mb-3">
-              Visualize informações importantes em um painel intuitivo.
-            </p>
-          </div>
-          <div className="bg-white dark:bg-zinc-800 p-6 rounded-2xl shadow">
-            <UserCheck
-              className="mx-auto text-black dark:text-white"
-              size={40}
-            />
-            <h4 className="text-xl font-medium mt-4">
-              Gerencie com facilidade
-            </h4>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-2 mb-3">
-              Adicione, edite e acompanhe seus dados sempre que precisar.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 px-6 text-center">
-        <h3 className="text-3xl font-semibold mb-8">O que estão dizendo</h3>
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow">
-            <p className="italic text-zinc-600 dark:text-zinc-300">
-              “Simples, rápido e eficiente. Exatamente o que eu precisava.”
-            </p>
-            <p className="font-bold mt-4">— João M.</p>
-          </div>
-          <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow">
-            <p className="italic text-zinc-600 dark:text-zinc-300">
-              “O Mini Dash me ajudou a me organizar melhor no dia a dia.”
-            </p>
-            <p className="font-bold mt-4">— Ana C.</p>
-          </div>
-          <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow">
-            <p className="italic text-zinc-600 dark:text-zinc-300">
-              “Fácil de usar e com ótimo visual. Recomendo demais.”
-            </p>
-            <p className="font-bold mt-4">— Pedro L.</p>
           </div>
         </div>
       </section>

@@ -65,7 +65,7 @@ export default function Dashboard() {
               <CardDescription>Total vendas em 90 dias</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-base sm:text-lg font-bold">R$ 00,00</p>
+              <p className="text-base sm:text-lg font-bold">R$ 56.374,82</p>
             </CardContent>
           </Card>
 

@@ -27,7 +27,7 @@ import {
   ChevronRight,
   ChevronsUp,
   Search as SearchIcon,
-  PackageOpen,
+  // PackageOpen, // Importe PackageOpen se for usar
 } from "lucide-react";
 import {
   Select,
@@ -79,13 +79,15 @@ const SortIndicator = React.memo(({ direction }) => {
 const FilterInput = React.memo(
   ({ icon: Icon, value, onChange, placeholder }) => {
     return (
-      <div className="relative w-full max-w-sm">
+      <div className="relative w-full max-w-xs sm:max-w-sm">
+        {" "}
+        {/* Adicionado max-w-xs para mobile */}
         <Input
           type="text"
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="pl-10"
+          className="pl-10 w-full" // Garante que ocupa a largura total do seu container
         />
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
           <Icon className="h-5 w-5" />
@@ -97,13 +99,15 @@ const FilterInput = React.memo(
 
 export default function StockList() {
   const [stockItems, setStockItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Loader para os itens da tabela de estoque
   const [filter, setFilter] = useState("");
   const [form, setForm] = useState({ product_id: "", quantity: "" });
   const [editingId, setEditingId] = useState(null);
   const [user, setUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [availableProducts, setAvailableProducts] = useState([]);
+  const [loadingAvailableProducts, setLoadingAvailableProducts] =
+    useState(false); // NOVO: Loader para produtos disponíveis
 
   // Paginação
   const [currentPage, setCurrentPage] = useState(1);
@@ -136,16 +140,18 @@ export default function StockList() {
   }, [stockItems]);
 
   const fetchAvailableProducts = useCallback(async () => {
+    setLoadingAvailableProducts(true); // Inicia o loading
     const { data, error } = await supabase
       .from("products")
       .select("id, name")
-      .eq("user_id", user.id);
+      .eq("user_id", user.id); // Certifique-se de que `user` não é nulo aqui
     if (error) {
       toast.error("Erro ao buscar produtos disponíveis: " + error.message);
     } else {
       setAvailableProducts(data);
     }
-  }, [user]);
+    setLoadingAvailableProducts(false); // Finaliza o loading
+  }, [user]); // Dependência em user para buscar produtos do usuário logado
 
   useEffect(() => {
     const getUser = async () => {
@@ -160,7 +166,7 @@ export default function StockList() {
   useEffect(() => {
     if (user) {
       fetchStockItems();
-      fetchAvailableProducts();
+      fetchAvailableProducts(); // Busca os produtos disponíveis quando o user é carregado
     }
   }, [user, fetchStockItems, fetchAvailableProducts]);
 
@@ -218,6 +224,8 @@ export default function StockList() {
     setEditingId(null);
     setForm({ product_id: "", quantity: "" });
     setIsModalOpen(true);
+    // Nota: availableProducts já é buscado no useEffect, então não precisa aqui
+    // a menos que a lista mude frequentemente e você queira sempre a mais atualizada
   }, []);
 
   const openEditModal = useCallback((item) => {
@@ -254,6 +262,7 @@ export default function StockList() {
       }
 
       if (editingId) {
+        // Lógica para EDIÇÃO de um item de estoque existente
         const { error } = await supabase
           .from("stock")
           .update({
@@ -269,19 +278,60 @@ export default function StockList() {
           fetchStockItems();
         }
       } else {
-        const { error } = await supabase.from("stock").insert([
-          {
-            product_id: form.product_id,
-            quantity: quantityNumber,
-            user_id: user.id,
-          },
-        ]);
-        if (error) {
-          toast.error("Erro ao criar item de estoque: " + error.message);
-        } else {
-          toast.success("Item de estoque criado.");
+        // Lógica para CRIAR um novo item OU ATUALIZAR um existente somando a quantidade
+        try {
+          // 1. Tentar encontrar um item de estoque existente para o product_id selecionado
+          const { data: existingStockItem, error: searchError } = await supabase
+            .from("stock")
+            .select("id, quantity")
+            .eq("product_id", form.product_id)
+            .eq("user_id", user.id) // Garante que a busca é para o usuário logado
+            .single();
+
+          if (searchError && searchError.code !== "PGRST116") {
+            // PGRST116 = No rows found (nenhuma linha encontrada)
+            throw searchError;
+          }
+
+          if (existingStockItem) {
+            // 2. Se o item de estoque para este produto já existe, ATUALIZAR a quantidade
+            const updatedQuantity = existingStockItem.quantity + quantityNumber;
+
+            const { error: updateError } = await supabase
+              .from("stock")
+              .update({
+                quantity: updatedQuantity,
+                updated_at: new Date().toISOString(),
+              })
+              .eq("id", existingStockItem.id);
+
+            if (updateError) {
+              throw updateError;
+            }
+            toast.success(
+              `Quantidade de estoque do produto aumentada para ${updatedQuantity}.`
+            );
+          } else {
+            // 3. Se não existe item de estoque para este produto, INSERIR um novo
+            const { error: insertError } = await supabase.from("stock").insert([
+              {
+                product_id: form.product_id,
+                quantity: quantityNumber,
+                user_id: user.id,
+              },
+            ]);
+
+            if (insertError) {
+              throw insertError;
+            }
+            toast.success("Novo item de estoque criado.");
+          }
+
           setIsModalOpen(false);
-          fetchStockItems();
+          fetchStockItems(); // Recarrega a lista de itens de estoque para refletir a mudança
+        } catch (error) {
+          console.error("Erro ao gerenciar item de estoque:", error.message);
+          toast.error("Erro ao gerenciar item de estoque: " + error.message);
         }
       }
     },
@@ -334,11 +384,17 @@ export default function StockList() {
   }, [debouncedSetFilter]);
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+      {" "}
+      {/* Ajustado padding e max-width */}
       <Card className="mb-5">
         <CardHeader>
-          <div className="flex items-center justify-center">
-            <div className="flex flex-col">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+            {" "}
+            {/* Layout responsivo */}
+            <div className="flex flex-col text-center sm:text-left">
+              {" "}
+              {/* Alinhamento de texto */}
               <CardTitle className="text-lg sm:text-xl text-black dark:text-white select-none">
                 Total de Itens em Estoque:
               </CardTitle>
@@ -346,16 +402,18 @@ export default function StockList() {
                 Capacidade máxima de 2.000 items
               </CardDescription>
             </div>
-            <Archive className="ml-auto w-6 h-6" />
+            <Archive className="w-8 h-8 sm:w-6 sm:h-6 flex-shrink-0 mt-2 sm:mt-0" />{" "}
+            {/* Ícone responsivo */}
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-lg sm:text-xl font-bold">
+          <p className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
+            {" "}
+            {/* Tamanho e alinhamento */}
             {totalQuantityInStock} / 2.000
           </p>
         </CardContent>
       </Card>
-
       <div className="flex flex-col sm:flex-row mb-6 gap-4 items-center justify-between">
         <FilterInput
           icon={SearchIcon}
@@ -365,23 +423,26 @@ export default function StockList() {
         <Button
           onClick={openCreateModal}
           variant="default"
-          className="whitespace-nowrap"
+          className="w-full sm:w-auto whitespace-nowrap" // Botão ocupa largura total em mobile
         >
           Novo Item de Estoque
         </Button>
       </div>
-
       {loading ? (
         <LoadingSpinner />
       ) : filteredAndSortedStockItems.length === 0 ? (
-        <p>Nenhum item de estoque encontrado.</p>
+        <p className="text-center text-muted-foreground py-8">
+          Nenhum item de estoque encontrado.
+        </p>
       ) : (
         <div className="overflow-x-auto border border-border rounded-md dark:bg-zinc-900">
           <table className="w-full min-w-[600px] text-left">
+            {" "}
+            {/* min-w para garantir scroll em telas pequenas */}
             <thead>
               <tr>
                 <th
-                  className="border-b border-border p-4 font-medium cursor-pointer select-none"
+                  className="border-b border-border p-4 font-medium cursor-pointer select-none whitespace-nowrap"
                   onClick={() => requestSort("product_name")}
                 >
                   <div className="inline-flex items-center gap-1">
@@ -396,7 +457,7 @@ export default function StockList() {
                   </div>
                 </th>
                 <th
-                  className="border-b border-border p-4 font-medium cursor-pointer select-none"
+                  className="border-b border-border p-4 font-medium cursor-pointer select-none whitespace-nowrap"
                   onClick={() => requestSort("quantity")}
                 >
                   <div className="inline-flex items-center gap-1">
@@ -411,7 +472,7 @@ export default function StockList() {
                   </div>
                 </th>
                 <th
-                  className="border-b border-border p-4 font-medium cursor-pointer select-none"
+                  className="border-b border-border p-4 font-medium cursor-pointer select-none whitespace-nowrap"
                   onClick={() => requestSort("updated_at")}
                 >
                   <div className="inline-flex items-center gap-1">
@@ -425,7 +486,7 @@ export default function StockList() {
                     />
                   </div>
                 </th>
-                <th className="border-b border-border p-4 font-medium">
+                <th className="border-b border-border p-4 font-medium whitespace-nowrap">
                   Ações
                 </th>
               </tr>
@@ -436,26 +497,29 @@ export default function StockList() {
                   key={item.id}
                   className="border-b border-border last:border-0 hover:bg-muted"
                 >
-                  <td className="p-4 font-medium">
+                  <td className="p-4 font-medium whitespace-nowrap">
                     {item.products?.name || "Produto Desconhecido"}
                   </td>
-                  <td className="p-4">{item.quantity}</td>
-                  <td className="p-4">
+                  <td className="p-4 whitespace-nowrap">{item.quantity}</td>
+                  <td className="p-4 whitespace-nowrap">
                     {new Date(item.updated_at).toLocaleDateString("pt-BR")}{" "}
                     {new Date(item.updated_at).toLocaleTimeString("pt-BR")}
                   </td>
-                  <td className="p-4 space-x-2">
+                  <td className="p-4 space-x-2 flex flex-col sm:flex-row gap-2 sm:gap-0">
+                    {" "}
+                    {/* Botões em coluna no mobile */}
                     <Button
                       size="sm"
                       variant="default"
                       onClick={() => openEditModal(item)}
+                      className="w-full sm:w-auto" // Botão ocupa largura total em mobile
                     >
                       Editar
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="text-destructive"
+                      className="text-destructive w-full sm:w-auto" // Botão ocupa largura total em mobile
                       onClick={() => handleDelete(item.id)}
                     >
                       Excluir
@@ -467,10 +531,11 @@ export default function StockList() {
           </table>
         </div>
       )}
-
       {/* Paginação */}
       {filteredAndSortedStockItems.length > 0 && totalPages > 1 && (
-        <div className="flex justify-center space-x-2 mt-4">
+        <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-2 mt-4">
+          {" "}
+          {/* Ajuste de layout */}
           <Button
             size="sm"
             disabled={currentPage === 1}
@@ -478,7 +543,9 @@ export default function StockList() {
           >
             <ChevronLeft />
           </Button>
-          <span className="px-4 py-2 select-none">
+          <span className="px-4 py-2 select-none text-sm sm:text-base">
+            {" "}
+            {/* Tamanho do texto */}
             Página {currentPage} de {totalPages}
           </span>
           <Button
@@ -490,10 +557,11 @@ export default function StockList() {
           </Button>
         </div>
       )}
-
       {/* Modal Criar/Editar */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-md w-[95%] p-4">
+          {" "}
+          {/* Ajustado max-width e padding para mobile */}
           <DialogHeader>
             <DialogTitle>
               {editingId ? "Editar Quantidade" : "Novo Item de Estoque"}
@@ -514,7 +582,14 @@ export default function StockList() {
                     <SelectValue placeholder="Selecione um produto" />
                   </SelectTrigger>
                   <SelectContent>
-                    {availableProducts.length === 0 ? (
+                    {loadingAvailableProducts ? (
+                      <SelectItem disabled value="loading">
+                        <div className="flex items-center justify-center py-2">
+                          <LoadingSpinner /> {/* Spinner no centro */}
+                          <span className="ml-2">Carregando produtos...</span>
+                        </div>
+                      </SelectItem>
+                    ) : availableProducts.length === 0 ? (
                       <SelectItem disabled>
                         Nenhum produto disponível
                       </SelectItem>
@@ -542,13 +617,19 @@ export default function StockList() {
                 min="0"
               />
             </div>
-            <DialogFooter>
+            <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-0">
               <DialogClose asChild>
-                <Button type="button" variant="outline" className="mr-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full sm:w-auto sm:mr-2"
+                >
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit">{editingId ? "Salvar" : "Criar"}</Button>
+              <Button type="submit" className="w-full sm:w-auto">
+                {editingId ? "Salvar" : "Adicionar"}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
