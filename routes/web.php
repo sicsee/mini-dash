@@ -20,6 +20,7 @@ Route::post('/login',  [LoginController::class, 'authenticate'])->name('auth.log
 Route::middleware('auth')->group(function () {
     Route::post('/logout',[LoginController::class, 'logout'])->name('auth.logout');
 
+
     Route::get('/dashboard', [SiteController::class, 'dashboard'])->name('site.dashboard');
 
 

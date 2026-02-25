@@ -1,5 +1,5 @@
 
-<x-layout>
+<x-layout.layout>
   <main class="flex items-center justify-center h-screen w-full bg-zinc-200">
     <section class="hidden sm:block w-1/2 h-full p-4">
       <div class="bg-center bg-cover bg-no-repeat w-full h-full rounded-2xl flex justify-center" style="background-image: url({{ asset('images/bg-black.jpg') }})">
@@ -74,6 +74,6 @@
       </div>
     </section>
   </main>
-</x-layout>
+</x-layout.layout>
 
   

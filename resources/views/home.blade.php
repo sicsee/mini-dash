@@ -1,4 +1,4 @@
-<x-layout>
+<x-layouts.layout>
   <main class="text-escuro flex justify-center items-center flex-col h-screen bg-center bg-no-repeat bg-cover" style="background-image: url('{{ asset('images/bg-land.png') }}')">
     <x-header />
 
@@ -24,4 +24,4 @@
       </div>
     </section>
   </main>
-</x-layout>
+</x-layout.layout>

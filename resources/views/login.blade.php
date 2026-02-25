@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout.layout>
   <main class="flex items-center justify-center h-screen w-full bg-zinc-200">
   <section class="w-1/2 h-full flex justify-center items-center">
     <div class="flex flex-col w-110 p-10 shadow-xl shadow-zinc-400 rounded-2xl bg-white">
@@ -53,6 +53,6 @@
      </div>
     </section>
   </main>
-</x-layout>
+</x-layout.layout>
 
 
