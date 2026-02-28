@@ -1,41 +1,66 @@
+<x-layouts.layout-dash>
+  <main class="container-dash">
+      
+      <!-- Cabeçalho -->
+      <header class="flex items-center justify-between w-full max-w-7xl mt-10">
+          <h1 class="title-dash">Produtos</h1>
 
-<x-layout>
-    <main class="py-10">
-      <section class="bg-white max-w-150 mx-auto mt-4 p-10 border-2">
-        <h1 class="font-bold text-3xl">
-          Adicionar Produto
-        </h1>
-  
-        <p>
-          Preencha as informações do produto
-        </p>
-  
-        <form action="{{ route('products.store') }}" method="POST" class="flex flex-col ">
-          @csrf
-  
-          <div class="flex flex-col gap-2 mb-4">
-            <label for="name">Nome</label>
-            <input type="text" name="name" placeholder="Ex: Camisa Polo G" class="bg-white border-2 p-2 @error('name') border-red-500 @enderror">
-            @error('name')
-              <p class="text-red-500 text-sm">
-                {{ $message }}
-              </p>
-            @enderror
-          </div>
-  
-          <div class="flex flex-col gap-2 mb-4">
-            <label for="price">Preço</label>
-            <input type='number' name="price" placeholder="234,55" class="bg-white border-2 p-2 @error('price') border-red-500 @enderror">
-            @error('price')
-              <p class="text-red-500 text-sm">
-                {{ $message }}
-              </p>
-            @enderror
-          </div>
-  
-          <button type="submit" class="bg-white p-2 border-2">Adicionar Produto</button>
-        </form>
+          <!-- Modal (Alpine) -->
+          <x-dashboard.modal />
+      </header>
+
+      
+      <section class="bg-white rounded-xl shadow-sm border border-gray-200 table-container w-full">
+          <table class="min-w-full border-collapse">
+              <thead class="bg-gray-50">
+                  <tr>
+                      <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                          Produto
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                          Preço
+                      </th>
+                      <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                          Ações
+                      </th>
+                  </tr>
+              </thead>
+
+              <tbody class="divide-y divide-gray-100">
+                  @forelse ($products as $p)
+                      <tr class="hover:bg-gray-50 transition">
+                          <td class="px-6 py-4 text-sm font-medium text-gray-800 border-r border-gray-200">
+                              {{ $p->name }}
+                          </td>
+
+                          <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">
+                              R$ {{ number_format($p->price, 2, ',', '.') }}
+                          </td>
+
+                          <td class="px-6 py-4 text-right">
+                              <div class="flex justify-end gap-2">
+                                  <x-dashboard.modal-edit :p="$p"/>
+
+                                  <form action="{{ route('products.destroy', $p) }}" method="POST">
+                                      @csrf
+                                      @method('DELETE')
+                                      <button class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md bg-red-600 text-white hover:bg-red-700">
+                                          Excluir
+                                      </button>
+                                  </form>
+                              </div>
+                          </td>
+                      </tr>
+                  @empty
+                      <tr>
+                          <td colspan="3" class="px-6 py-6 text-center text-sm text-gray-500">
+                              Nenhum produto cadastrado
+                          </td>
+                      </tr>
+                  @endforelse
+              </tbody>
+          </table>
       </section>
-    </main>
-  </x-layout>
-  
+
+  </main>
+</x-layouts.layout-dash>

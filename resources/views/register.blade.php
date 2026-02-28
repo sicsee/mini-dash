@@ -1,10 +1,10 @@
 
-<x-layout.layout>
+<x-layouts.layout>
   <main class="flex items-center justify-center h-screen w-full bg-zinc-200">
     <section class="hidden sm:block w-1/2 h-full p-4">
       <div class="bg-center bg-cover bg-no-repeat w-full h-full rounded-2xl flex justify-center" style="background-image: url({{ asset('images/bg-black.jpg') }})">
        <div class="flex items-center justify-center gap-2">
-         <x-icons.globe />
+        <x-lucide-globe class="text-white w-9 h-9"/>
          <h1 class="text-2xl font-bold text-white">Mini Dash</h1>
       </div>
      </section>
@@ -74,6 +74,6 @@
       </div>
     </section>
   </main>
-</x-layout.layout>
+</x-layouts.layout>
 
   

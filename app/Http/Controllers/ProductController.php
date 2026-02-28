@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -13,7 +15,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.products');
+        $products = Auth::user()->products()->get();
+
+        return view('products.products', compact('products'));
     }
 
     /**
@@ -26,8 +30,8 @@ class ProductController extends Controller
         auth()->user()->products()->create($validated);
 
         return redirect()
-            ->route('site.dashboard')
-            ->with('success', 'Produtoi criado com sucesso');
+            ->route('products.index')
+            ->with('success', 'Produto criado com sucesso');
     }
 
     /**
@@ -50,7 +54,7 @@ class ProductController extends Controller
         $product->update($request->all());
 
         return redirect()
-        ->route('site.dashboard')
+        ->route('products.index')
         ->with('success',value: 'Produto atualizado com sucesso');
     }
 
@@ -66,7 +70,7 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()
-            ->route('site.dashboard')
+            ->route('products.index')
             ->with('success','Produto removido com sucesso');
     }
 }
