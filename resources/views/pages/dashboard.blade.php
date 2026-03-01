@@ -1,4 +1,4 @@
 <x-layouts.layout-dash>
-    <x-dashboard.header />
+    <x-ui.header />
     <h1>Teste Dash</h1>
 </x-layouts.layout-dash>
