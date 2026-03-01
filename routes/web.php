@@ -4,7 +4,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SiteController;
-use App\Livewire\Dashboard;
+use App\Http\Controllers\StockController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", [SiteController::class,"index"])->name('site.index');
@@ -24,5 +25,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [SiteController::class, 'dashboard'])->name('site.dashboard');
 
 
-    Route::resource('/dashboard/products', ProductController::class)->except('show');
+    Route::resource('/dashboard/products', ProductController::class)->except('create', 'show', 'edit');
+    Route::resource('/dashboard/stocks', StockController::class)->except('create', 'show', 'edit');
 });

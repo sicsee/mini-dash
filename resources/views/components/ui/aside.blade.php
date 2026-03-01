@@ -10,8 +10,8 @@
             <span class="sidebar-tooltip">Dashboard</span>
         </a>
 
-        <a href="#" class="sidebar-item">
-            <x-lucide-archive class="w-7 h-7 text-zinc-400" />
+        <a href="{{ route('stocks.index') }}" class="sidebar-item">
+            <x-lucide-archive class="w-7 h-7 {{ Route::is('stocks.index') ? 'text-black' : 'text-zinc-400' }}" />
             <span class="sidebar-tooltip">Estoque</span>
         </a>
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -17,7 +17,7 @@ class ProductController extends Controller
     {
         $products = Auth::user()->products()->get();
 
-        return view('products.products', compact('products'));
+        return view('pages.products', compact('products'));
     }
 
     /**
@@ -32,14 +32,6 @@ class ProductController extends Controller
         return redirect()
             ->route('products.index')
             ->with('success', 'Produto criado com sucesso');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        return view('products.edit' , compact('product'));
     }
 
     /**

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 
-class Stock extends Model
+class Stocks extends Model
 {
     
 

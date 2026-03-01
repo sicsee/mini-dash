@@ -24,7 +24,7 @@ class Product extends Model
 
     public function stock()
     {
-        return $this->hasOne(Stock::class);
+        return $this->hasOne(Stocks::class);
     }
 
     public function saleItems()
