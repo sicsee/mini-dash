@@ -8,13 +8,13 @@ class SiteController extends Controller
 {
     public function index(): View
     {
-        return view("home");
+        return view('pages.home');
     }
 
     public function dashboard(): View
     {
         $produtos = auth()->user()->products;
 
-        return view('dashboard', compact('produtos'));
+        return view('pages.dashboard', compact('produtos'));
     }
 }

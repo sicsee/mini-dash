@@ -11,7 +11,7 @@ class RegisterController extends Controller
 {
     public function index()
     {
-        return view('register');
+        return view('pages.register');
     }
 
     public function store(RegisterRequest $request)
