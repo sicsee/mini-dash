@@ -4,7 +4,7 @@
     currentProduct: {
         id: null,
         name: '',
-        price: ''
+        quantity: ''
     }
 }" class="container-dash">
 
@@ -40,34 +40,31 @@
 
 
                 <tbody class="divide-y divide-gray-100">
-                    @forelse ($stocks as $item)
+                    @forelse ($stocks as $s)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 text-sm font-medium text-gray-800 border-r border-gray-200">
-                                {{ $item->product->name }}
+                                {{ $s->product->name }}
                             </td>
 
                             <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">
-                                {{ $item->quantity }}
+                                {{ $s->quantity }}
                             </td>
                             
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-2">
-                                    <button @click=" currentProduct = {
-                                                id: {{ $item->id }},
-                                                quantity: '{{ $item->quantity }}'
+                                    <button
+                                        @click="
+                                            currentProduct = {
+                                                id: {{ $s->id }},
+                                                name: '{{ addslashes($s->product->name) }}',
+                                                quantity: {{ $s->quantity }}
                                             };
                                             activeModal = 'stock-edit';
-                                        "class="btn btn-sm font-bold bg-blue-600 text-white hover:bg-blue-700">
+                                        "
+                                        class="btn btn-sm font-bold bg-blue-600 text-white hover:bg-blue-700"
+                                    >
                                         Editar
                                     </button>
-
-                                    <form action="{{ route('products.destroy', $item) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm font-bold bg-red-600 text-white hover:bg-red-700">
-                                            Excluir
-                                        </button>
-                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -148,8 +145,8 @@
             </form>
         </x-ui.modal>
 
-        <x-ui.modal name="product-edit" title="Editar Produto">
-            <form method="POST" :action="`/dashboard/products/${currentProduct.id}`" class="space-y-4">
+        <x-ui.modal name="stock-edit" title="Editar Produto">
+            <form method="POST" :action="`/dashboard/stocks/${currentProduct.id}`" class="space-y-4">
                 @csrf
                 @method('PUT')
 
@@ -158,14 +155,14 @@
                         Nome do produto
                     </label>
                     <input type="text" name="name" x-model="currentProduct.name"
-                        class="w-full mt-1 px-3 py-2 border rounded-md">
+                        class="w-full mt-1 px-3 py-2 border rounded-md " disabled>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-600">
-                        Preço
+                    <label for="quantity" class="block text-sm font-medium text-gray-600">
+                        Quantidade
                     </label>
-                    <input type="number" name="price" x-model="currentProduct.price"
+                    <input type="number" name="quantity" x-model="currentProduct.quantity"
                         class="w-full mt-1 px-3 py-2 border rounded-md">
                 </div>
 

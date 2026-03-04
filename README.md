@@ -1,59 +1,125 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Mini Dash – Dashboard de Produtos e Estoque
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### 1. Visão Geral
 
-## About Laravel
+O **Mini Dash** é um pequeno painel administrativo para gestão de **produtos** e **estoque**, desenvolvido com **Laravel 12**.  
+Ele oferece autenticação de usuários, um **dashboard** protegido e telas para cadastrar, listar, atualizar e remover produtos, além do controle de estoque.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Este projeto foi criado como exercício prático de desenvolvimento **full stack** com foco em:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Autenticação** e proteção de rotas.
+- **CRUD** de recursos (produtos e estoque).
+- Organização em **controllers**, **views Blade** e **rotas** seguindo o padrão do Laravel.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+### 2. Funcionalidades Principais
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Página inicial pública** (`/`): apresentação simples do sistema.
+- **Cadastro de usuário** (`/register`): criação de conta.
+- **Login** (`/login`): autenticação de usuários.
+- **Logout** (`/logout`): encerramento de sessão.
+- **Dashboard protegido** (`/dashboard`): acessível apenas para usuários autenticados.
+- **Gestão de produtos** (`/dashboard/products`):
+  - Listagem de produtos do usuário autenticado.
+  - Criação, atualização e exclusão de produtos.
+- **Gestão de estoque** (`/dashboard/stocks`):
+  - Listagem e manutenção de registros de estoque vinculados aos produtos.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+### 3. Tecnologias Utilizadas
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **PHP 8.2+** com **Laravel 12**.
+- **Blade** para renderização de views.
+- **Tailwind CSS** para estilização da interface.
+- **Eloquent ORM** para interação com o banco de dados relacional (ex.: MySQL).
+- **NPM / Vite** para build e assets front-end.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 4. Como Rodar o Projeto Localmente
 
-## Contributing
+#### 4.1. Pré-requisitos
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- PHP 8.2 ou superior.
+- Composer.
+- Node.js e NPM.
+- Servidor de banco de dados (ex.: MySQL).
 
-## Code of Conduct
+#### 4.2. Passos básicos
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+No diretório do projeto:
 
-## Security Vulnerabilities
+1. Instale as dependências PHP:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   ```bash
+   composer install
+   ```
 
-## License
+2. Copie o arquivo de ambiente e configure o banco:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   ```bash
+   cp .env.example .env
+   # Edite .env e configure DB_*, APP_URL, etc.
+   ```
+
+3. Gere a chave da aplicação:
+
+   ```bash
+   php artisan key:generate
+   ```
+
+4. Rode as migrations:
+
+   ```bash
+   php artisan migrate
+   ```
+
+5. Instale as dependências front-end:
+
+   ```bash
+   npm install
+   ```
+
+6. Suba o servidor de desenvolvimento e o build front-end (em terminais separados):
+
+   ```bash
+   php artisan serve
+   npm run dev
+   ```
+
+Ou, se preferir usar o script de desenvolvimento definido no `composer.json`:
+
+```bash
+composer run dev
+```
+
+---
+
+### 5. Rotas Principais
+
+- `GET /` → página inicial.
+- `GET /register` / `POST /register` → cadastro de usuário.
+- `GET /login` / `POST /login` → login.
+- `POST /logout` → logout (apenas autenticado).
+- `GET /dashboard` → dashboard com visão geral dos produtos do usuário.
+- `resource /dashboard/products` → CRUD de produtos (exceto create/show/edit por view dedicada).
+- `resource /dashboard/stocks` → CRUD de estoques (exceto create/show/edit por view dedicada).
+
+---
+
+### 6. Desenvolvedor
+
+| Detalhe           | Informação                                                                 |
+| ----------------- | -------------------------------------------------------------------------- |
+| **Nome Completo** | Nicolas David Da Silva Godinho                                             |
+| **LinkedIn**      | [https://www.linkedin.com/in/sicsee/](https://www.linkedin.com/in/sicsee/) |
+| **GitHub**        | [https://github.com/sicsee/](https://github.com/sicsee/)                   |
+
+---
+
+### 7. Notas Finais
+
+O projeto foi desenvolvido manualmente com foco em boas práticas do ecossistema Laravel, organização de código e uma base sólida para evolução futura do painel (novos módulos, relatórios, etc.).
+

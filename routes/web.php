@@ -26,5 +26,5 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('/dashboard/products', ProductController::class)->except('create', 'show', 'edit');
-    Route::resource('/dashboard/stocks', StockController::class)->except('create', 'show', 'edit');
+    Route::resource('/dashboard/stocks', StockController::class)->except('create', 'show', 'edit', 'destroy');
 });

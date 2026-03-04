@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StockRequest;
-use App\Models\Stock;
+use App\Models\Stocks;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,16 +47,18 @@ class StockController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Stock $stock)
+    public function update(StockRequest $request, Stocks $stock)
     {
-        //
-    }
+        if($stock->user_id !== auth()->user()->id){
+            abort(403, 'Esse produto não é seu');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Stock $stock)
-    {
-        //
+        $stock->update($request->all());
+
+        return redirect()
+            ->route('stocks.index')
+            ->with('success','Produto removido com sucesso');
     }
+    
 }
+
