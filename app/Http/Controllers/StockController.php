@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StockRequest;
-use App\Models\Stocks;
-
-use Illuminate\Http\Request;
+use App\Models\Stock;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class StockController extends Controller
 {
@@ -21,7 +18,6 @@ class StockController extends Controller
         return view('pages.stock', compact('stocks'));
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
@@ -29,36 +25,39 @@ class StockController extends Controller
     {
         $validated = $request->validated();
 
-        auth()->user()->stock()->updateOrCreate(
-            [
+        $stock = auth()->user()->stock()
+            ->where('product_id', $validated['product_id'])
+            ->first();
+
+        if ($stock) {
+            $stock->increment('quantity', $validated['quantity']);
+        } else {
+            auth()->user()->stock()->create([
                 'product_id' => $validated['product_id'],
-            ],
-            [
-                'quantity' => DB::raw('quantity + ' . $validated['quantity']),
-            ]
-        );
+                'quantity' => $validated['quantity'],
+            ]);
+        }
 
         return redirect()
             ->route('stocks.index')
             ->with('success', 'Quantidade registrada com sucesso');
     }
 
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(StockRequest $request, Stocks $stock)
+    public function update(StockRequest $request, Stock $stock)
     {
-        if($stock->user_id !== auth()->user()->id){
+        if ($stock->user_id !== auth()->id()) {
             abort(403, 'Esse produto não é seu');
         }
 
-        $stock->update($request->all());
+        $stock->update([
+            'quantity' => $request->quantity,
+        ]);
 
         return redirect()
             ->route('stocks.index')
-            ->with('success','Produto removido com sucesso');
+            ->with('success', 'Quantidade atualizada com sucesso');
     }
-    
 }
-

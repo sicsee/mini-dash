@@ -21,10 +21,16 @@ class StockRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'product_id' => ['required', 'exists:products,id'],
-            'quantity' => 'required|integer|min:0'
+        $rules = [
+            'quantity' => 'required|integer|min:0',
         ];
+
+        // No update, o stock já está na URL; product_id só é obrigatório no store.
+        if (! $this->route('stock')) {
+            $rules['product_id'] = ['required', 'exists:products,id'];
+        }
+
+        return $rules;
     }
 
     public function messages(): array

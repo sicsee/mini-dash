@@ -4,11 +4,9 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-
 class User extends Authenticatable
 {
-
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -19,7 +17,7 @@ class User extends Authenticatable
         'password',
     ];
 
-     /**
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
@@ -39,7 +37,6 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
 
     /* Relationships */
 
@@ -65,6 +62,21 @@ class User extends Authenticatable
 
     public function stock()
     {
-        return $this->hasMany(Stocks::class);
+        return $this->hasMany(Stock::class);
+    }
+
+    public function getTotalProductsAttribute()
+    {
+        return $this->stock()->count();
+    }
+
+    public function getTotalItemsAttribute()
+    {
+        return $this->stock()->sum('quantity');
+    }
+
+    public function getTotalCustomersAttribute()
+    {
+        return $this->customers()->count();
     }
 }

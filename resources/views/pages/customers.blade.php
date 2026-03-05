@@ -4,7 +4,8 @@
     currentProduct: {
         id: null,
         name: '',
-        price: ''
+        email: ''
+        phone: ''
     }
 }" class="container-dash">
 
@@ -12,16 +13,16 @@
         <header class="flex flex-col items-center w-full max-w-7xl mt-10 gap-10">
             <x-ui.card>
                 <x-ui.card-title >
-                    Total de produtos:  {{ auth()->user()->total_products}}
+                    Total de clientes registrados:  {{ auth()->user()->total_customers}}
                 </x-ui.card-title> 
-                <x-lucide-package  class="w-7 h-7"/>
+                <x-lucide-user  class="w-7 h-7"/>
             </x-ui.card>
             <div class="flex justify-between w-full">
-                <h1 class="title-dash">Produtos</h1>
+                <h1 class="title-dash">Clientes</h1>
 
                 <!-- Modal (Alpine) -->
-                <button @click="activeModal = 'product-create'" class="btn btn-lg btn-default">
-                    Cadastrar Produto
+                <button @click="activeModal = 'costumer-create'" class="btn btn-lg btn-default">
+                    Cadastrar Cliente
                 </button>
             </div>
         </header>
@@ -33,14 +34,14 @@
                     <tr>
                         <th
                             class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">
-                            Produto
+                            Nome
                         </th>
                         <th
                             class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">
-                            Preço
+                            Email
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">
-                            Quantidade
+                            Telefone
                         </th>
                         <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
                             Ações
@@ -49,29 +50,30 @@
                 </thead>
 
                 <tbody class="divide-y divide-gray-100">
-                    @forelse ($products as $p)
+                    @forelse ($customers as $c)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 text-sm font-medium text-gray-800 border-r border-gray-200">
                                 {{ $p->name }}
                             </td>
 
                             <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">
-                                R$ {{ number_format($p->price, 2, ',', '.') }}
+                                {{ $c->email }}
                             </td>
 
                             <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">
-                                {{ $p->stock->quantity }}
+                                {{ $c->phone }}
                             </td>
 
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-2">
                                     <button @click="
                                         currentProduct = {
-                                            id: {{ $p->id }},
-                                            name: '{{ addslashes($p->name) }}',
-                                            price: '{{ $p->price }}'
+                                            id: {{ $c->id }},
+                                            name: '{{ addslashes($c->name) }}',
+                                            email: '{{ addslashes($c->email) }}',
+                                            phone: {{ $c->phone }}
                                         };
-                                        activeModal = 'product-edit';
+                                        activeModal = 'costumer-edit';
                                     " class="btn btn-sm font-bold bg-blue-600 text-white hover:bg-blue-700">
                                         Editar
                                     </button>
@@ -89,7 +91,7 @@
                     @empty
                         <tr>
                             <td colspan="3" class="px-6 py-6 text-center text-sm text-gray-500">
-                                Nenhum produto cadastrado
+                                Nenhum cliente cadastrado
                             </td>
                         </tr>
                     @endforelse
@@ -97,14 +99,14 @@
             </table>
         </section>
 
-        <x-ui.modal name="product-create" title="Cadastrar Produto">
+        <x-ui.modal name="costumer-create" title="Cadastrar Cliente">
             <form class="space-y-4" action="{{ route('products.store') }}" method="POST">
                 @csrf
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-600">
-                        Nome do produto
+                        Nome do Cliente
                     </label>
-                    <input type="text" name="name" placeholder="Ex: Camisa Polo G"
+                    <input type="text" name="name" placeholder="Fulano"
                         class="w-full mt-1 px-3 py-2 border rounded-md">
                     @error('name')
                         <p class="text-red-500 text-sm">
@@ -114,12 +116,25 @@
                 </div>
 
                 <div>
-                    <label for="price" class="block text-sm font-medium text-gray-600">
-                        Preço
+                    <label for="email" class="block text-sm font-medium text-gray-600">
+                        Email
                     </label>
-                    <input type="number" name="price" placeholder="Ex: 120"
+                    <input type="text" name="email" placeholder="fulano@email.com"
                         class="w-full mt-1 px-3 py-2 border rounded-md">
-                    @error('price')
+                    @error('email')
+                        <p class="text-red-500 text-sm">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-600">
+                        Telefone
+                    </label>
+                    <input type="number" name="phone" placeholder="+55 012 93456-7890"
+                        class="w-full mt-1 px-3 py-2 border rounded-md">
+                    @error('phone')
                         <p class="text-red-500 text-sm">
                             {{ $message }}
                         </p>

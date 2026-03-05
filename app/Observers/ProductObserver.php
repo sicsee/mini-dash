@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Product;
-use App\Models\Stocks;
+use App\Models\Stock;
 use Illuminate\Support\Facades\Auth;
 
 class ProductObserver
@@ -13,10 +13,10 @@ class ProductObserver
      */
     public function created(Product $product): void
     {
-        Stocks::create([
+        Stock::create([
             'user_id' => Auth::id(),
             'product_id' => $product->id,
-            'quantity'   => 0,
+            'quantity' => 0,
         ]);
     }
 

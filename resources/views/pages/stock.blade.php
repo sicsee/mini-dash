@@ -9,13 +9,21 @@
 }" class="container-dash">
 
         <!-- Cabeçalho -->
-        <header class="flex items-center justify-between w-full max-w-7xl mt-10">
-            <h1 class="title-dash">Estoque</h1>
+        <header class="flex flex-col items-center w-full max-w-7xl mt-10 gap-10">
+            <x-ui.card>
+                <x-ui.card-title >
+                    Total de Itens em Estoque:  {{ auth()->user()->total_items }}
+                </x-ui.card-title> 
+                <x-lucide-archive  class="w-7 h-7"/>
+            </x-ui.card>
+            <div class="flex justify-between w-full">
+                <h1 class="title-dash">Estoque</h1>
 
-            <!-- Modal (Alpine) -->
-            <button @click="activeModal = 'stock-create'" class="btn btn-lg btn-default">
-                Adicionar Quantidade
-            </button>
+                <!-- Modal (Alpine) -->
+                <button @click="activeModal = 'stock-create'" class="btn btn-lg btn-default">
+                    Adicionar Quantidade
+                </button>
+            </div>
         </header>
 
 
@@ -149,7 +157,7 @@
             <form method="POST" :action="`/dashboard/stocks/${currentProduct.id}`" class="space-y-4">
                 @csrf
                 @method('PUT')
-
+                
                 <div>
                     <label class="block text-sm font-medium text-gray-600">
                         Nome do produto

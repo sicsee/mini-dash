@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class Product extends Model
 {
     protected $fillable = [
@@ -24,7 +23,7 @@ class Product extends Model
 
     public function stock()
     {
-        return $this->hasOne(Stocks::class);
+        return $this->hasOne(Stock::class);
     }
 
     public function saleItems()
