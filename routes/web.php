@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\StockController;
 
@@ -29,4 +30,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('/dashboard/products', ProductController::class)->except('create', 'show', 'edit');
     Route::resource('/dashboard/stocks', StockController::class)->except('create', 'show', 'edit', 'destroy');
     Route::resource('/dashboard/customers', CustomerController::class)->except('create', 'show', 'edit');
+    Route::resource('/dashboard/sales', SaleController::class)->except('create', 'show','edit');
 });

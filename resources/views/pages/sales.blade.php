@@ -1,11 +1,10 @@
 <x-layouts.layout-dash>
     <main x-data="{
     activeModal: null,
-    currentCustomer: {
+    currentProduct: {
         id: null,
         name: '',
-        email: '',
-        phone: ''
+        price: ''
     }
 }" class="container-dash">
 
@@ -13,16 +12,16 @@
         <header class="flex flex-col items-center w-full max-w-7xl mt-10 gap-10">
             <x-ui.card>
                 <x-ui.card-title >
-                    Total de clientes registrados:  {{ auth()->user()->total_customers}}
+                    Total de produtos:  {{ auth()->user()->total_products}}
                 </x-ui.card-title> 
-                <x-lucide-user  class="w-7 h-7"/>
+                <x-lucide-package  class="w-7 h-7"/>
             </x-ui.card>
             <div class="flex justify-between w-full">
-                <h1 class="title-dash">Clientes</h1>
+                <h1 class="title-dash">Produtos</h1>
 
                 <!-- Modal (Alpine) -->
-                <button @click="activeModal = 'customer-create'" class="btn btn-lg btn-default">
-                    Cadastrar Cliente
+                <button @click="activeModal = 'product-create'" class="btn btn-lg btn-default">
+                    Cadastrar Produto
                 </button>
             </div>
         </header>
@@ -34,14 +33,14 @@
                     <tr>
                         <th
                             class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">
-                            Nome
+                            Produto
                         </th>
                         <th
                             class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">
-                            Email
+                            Preço
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">
-                            Telefone
+                            Quantidade
                         </th>
                         <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
                             Ações
@@ -50,35 +49,34 @@
                 </thead>
 
                 <tbody class="divide-y divide-gray-100">
-                    @forelse ($customers as $c)
+                    @forelse ($products as $p)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 text-sm font-medium text-gray-800 border-r border-gray-200">
-                                {{ $c->name }}
+                                {{ $p->name }}
                             </td>
 
                             <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">
-                                {{ $c->email }}
+                                R$ {{ number_format($p->price, 2, ',', '.') }}
                             </td>
 
                             <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">
-                                {{ $c->phone_formatted }}
+                                {{ $p->stock->quantity }}
                             </td>
 
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-2">
                                     <button @click="
-                                        currentCustomer = {
-                                            id: {{ $c->id }},
-                                            name: '{{ addslashes($c->name) }}',
-                                            email: '{{ $c->email }}',
-                                            phone: '{{ $c->phone }}'
+                                        currentProduct = {
+                                            id: {{ $p->id }},
+                                            name: '{{ addslashes($p->name) }}',
+                                            price: '{{ $p->price }}'
                                         };
-                                        activeModal = 'customer-edit';
+                                        activeModal = 'product-edit';
                                     " class="btn btn-sm font-bold bg-blue-600 text-white hover:bg-blue-700">
                                         Editar
                                     </button>
 
-                                    <form action="{{ route('customers.destroy', $c) }}" method="POST">
+                                    <form action="{{ route('products.destroy', $p) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-sm font-bold bg-red-600 text-white hover:bg-red-700">
@@ -91,7 +89,7 @@
                     @empty
                         <tr>
                             <td colspan="3" class="px-6 py-6 text-center text-sm text-gray-500">
-                                Nenhum cliente cadastrado
+                                Nenhum produto cadastrado
                             </td>
                         </tr>
                     @endforelse
@@ -99,14 +97,14 @@
             </table>
         </section>
 
-        <x-ui.modal name="customer-create" title="Cadastrar Cliente">
-            <form class="space-y-4" action="{{ route('customers.store') }}" method="POST">
+        <x-ui.modal name="product-create" title="Cadastrar Produto">
+            <form class="space-y-4" action="{{ route('products.store') }}" method="POST">
                 @csrf
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-600">
-                        Nome do Cliente
+                        Nome do produto
                     </label>
-                    <input type="text" name="name" placeholder="Fulano"
+                    <input type="text" name="name" placeholder="Ex: Camisa Polo G"
                         class="w-full mt-1 px-3 py-2 border rounded-md">
                     @error('name')
                         <p class="text-red-500 text-sm">
@@ -116,25 +114,12 @@
                 </div>
 
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-600">
-                        Email
+                    <label for="price" class="block text-sm font-medium text-gray-600">
+                        Preço
                     </label>
-                    <input type="text" name="email" placeholder="fulano@email.com"
+                    <input type="number" name="price" placeholder="Ex: 120"
                         class="w-full mt-1 px-3 py-2 border rounded-md">
-                    @error('email')
-                        <p class="text-red-500 text-sm">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-600">
-                        Telefone
-                    </label>
-                    <input type="number" name="phone" placeholder="+55 012 93456-7890"
-                        class="w-full mt-1 px-3 py-2 border rounded-md">
-                    @error('phone')
+                    @error('price')
                         <p class="text-red-500 text-sm">
                             {{ $message }}
                         </p>
@@ -153,59 +138,47 @@
             </form>
         </x-ui.modal>
 
-        <x-ui.modal name="customer-edit" title="Editar Cliente">
-            <form method="POST" :action="`/dashboard/customers/${currentCustomer.id}`" class="space-y-4">
-                    @csrf
-                    @method('PUT')
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-600">
-                            Nome do Cliente
-                        </label>
-                        <input type="text" name="name" x-model="currentCustomer.name"
-                            class="w-full mt-1 px-3 py-2 border rounded-md">
-                        @error('name')
-                            <p class="text-red-500 text-sm">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-    
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-600">
-                            Email
-                        </label>
-                        <input type="text" name="email" x-model="currentCustomer.email"
-                            class="w-full mt-1 px-3 py-2 border rounded-md">
-                        @error('email')
-                            <p class="text-red-500 text-sm">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-    
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-600">
-                            Telefone
-                        </label>
-                        <input type="number" name="phone" x-model="currentCustomer.phone"
-                            class="w-full mt-1 px-3 py-2 border rounded-md">
-                        @error('phone')
-                            <p class="text-red-500 text-sm">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-    
-                    <div class="flex justify-end gap-2 pt-4">
-                        <button type="button" @click="activeModal = null" class="px-4 py-2 text-sm bg-gray-200 rounded-md">
-                            Cancelar
-                        </button>
-    
-                        <button type="submit" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md">
-                            Salvar
-                        </button>
-                    </div>
-                </form>
+        <x-ui.modal name="product-edit" title="Editar Produto">
+            <form method="POST" :action="`/dashboard/products/${currentProduct.id}`" class="space-y-4">
+                @csrf
+                @method('PUT')
+
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-600">
+                        Nome do produto
+                    </label>
+                    <input type="text" name="name" x-model="currentProduct.name"
+                        class="w-full mt-1 px-3 py-2 border rounded-md">
+                    @error('name')
+                        <p class="text-red-500 text-sm">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="price" class="block text-sm font-medium text-gray-600">
+                        Preço
+                    </label>
+                    <input type="number" name="price" x-model="currentProduct.price"
+                        class="w-full mt-1 px-3 py-2 border rounded-md">
+                    @error('price')
+                        <p class="text-red-500 text-sm">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4">
+                    <button type="button" @click="activeModal = null" class="px-4 py-2 text-sm bg-gray-200 rounded-md">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md">
+                        Salvar
+                    </button>
+                </div>
+            </form>
         </x-ui.modal>
 
     </main>

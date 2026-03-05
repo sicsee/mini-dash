@@ -25,9 +25,8 @@
             <span class="sidebar-tooltip">Clientes</span>
         </a>
 
-        <a href="#" class="sidebar-item">
-            <x-lucide-dollar-sign class="w-7 h-7 text-zinc-400 hover:text-black cursor-pointer transition-linear duration-300" />
-
+        <a href="{{ route('sales.index') }}" class="sidebar-item">
+            <x-lucide-dollar-sign class="w-7 h-7 {{ Route::is('sales.index') ? 'text-black' : 'text-zinc-400 hover:text-black cursor-pointer transition-linear duration-300' }}" />
             <span class="sidebar-tooltip">Vendas</span>
         </a>
     </nav>

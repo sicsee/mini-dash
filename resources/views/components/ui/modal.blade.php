@@ -27,7 +27,7 @@
 
             <button
                 @click="activeModal = null"
-                class="text-gray-400 hover:text-gray-600 text-xl font-bold"
+                class="text-gray-400 hover:text-gray-600 text-xl font-bold cursor-pointer"
                 type="button"
             >
                 &times;

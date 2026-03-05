@@ -7,6 +7,7 @@ use App\Models\Product;
 
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -17,7 +18,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
         $products = Auth::user()->products()->get();
 
