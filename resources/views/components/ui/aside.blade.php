@@ -21,7 +21,7 @@
         </a>
 
         <a href="{{ route('customers.index') }}" class="sidebar-item">
-            <x-lucide-user class="w-7 h-7 text-zinc-400 hover:text-black cursor-pointer transition-linear duration-300" />
+            <x-lucide-user class="w-7 h-7 {{ Route::is('customers.index') ? 'text-black' : 'text-zinc-400 hover:text-black cursor-pointer transition-linear duration-300' }}" />
             <span class="sidebar-tooltip">Clientes</span>
         </a>
 

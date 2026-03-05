@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Product::class, 'product');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -39,11 +43,8 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
-        if($product->user_id !== auth()->user()->id){
-            abort(403, 'Esse produto não é seu');
-        }
 
-        $product->update($request->all());
+        $product->update($request->validated());
 
         return redirect()
         ->route('products.index')
@@ -55,9 +56,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        if($product->user_id !== auth()->user()->id){
-            abort(403, 'Esse produto não é seu');
-        }
 
         $product->delete();
 

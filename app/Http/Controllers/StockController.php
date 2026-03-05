@@ -7,7 +7,11 @@ use App\Models\Stock;
 use Illuminate\Support\Facades\Auth;
 
 class StockController extends Controller
-{
+{   
+    public function __construct()
+    {
+        $this->authorizeResource(Stock::class, 'stocks');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -48,10 +52,6 @@ class StockController extends Controller
      */
     public function update(StockRequest $request, Stock $stock)
     {
-        if ($stock->user_id !== auth()->id()) {
-            abort(403, 'Esse produto não é seu');
-        }
-
         $stock->update([
             'quantity' => $request->quantity,
         ]);

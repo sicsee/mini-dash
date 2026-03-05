@@ -20,6 +20,7 @@
 
 
     @livewireScripts
+    <script type="module" src="{{ Vite::asset('resource/js/app.js') }}"></script>
 </body>
 
 </html>

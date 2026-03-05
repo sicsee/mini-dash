@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
-{
+{   
+    public function __construct()
+    {
+        $this->authorizeResource(Customer::class, 'customers');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -36,9 +41,13 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Customer $customer)
+    public function update(CustomerRequest $request, Customer $customer)
     {
-        //
+        $customer->update($request->all());
+
+        return redirect()
+            ->route('customers.index')
+            ->with('success',value: 'Cliente atualizado com sucesso');
     }
 
     /**
