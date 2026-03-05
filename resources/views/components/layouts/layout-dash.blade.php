@@ -18,7 +18,7 @@
         {{ $slot }}
     </div>
 
-
+    <x-ui.toast />
     @livewireScripts
     <script type="module" src="{{ Vite::asset('resource/js/app.js') }}"></script>
 </body>

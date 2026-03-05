@@ -12,7 +12,7 @@ class CustomerController extends Controller
 {   
     public function __construct()
     {
-        $this->authorizeResource(Customer::class, 'customers');
+        $this->authorizeResource(Customer::class, 'customer');
     }
     /**
      * Display a listing of the resource.
@@ -55,6 +55,10 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+        $customer->delete();
+
+        return redirect()
+            ->route('customers.index')
+            ->with('warning', 'Cliente deletado com sucesso');
     }
 }

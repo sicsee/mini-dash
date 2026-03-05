@@ -78,7 +78,7 @@
                                         Editar
                                     </button>
 
-                                    <form action="{{ route('products.destroy', $c) }}" method="POST">
+                                    <form action="{{ route('customers.destroy', $c) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-sm font-bold bg-red-600 text-white hover:bg-red-700">
@@ -153,48 +153,60 @@
             </form>
         </x-ui.modal>
 
-        {{-- <x-ui.modal name="customer-edit" title="Editar Produto">
-            <form method="POST" :action="`/dashboard/customers/${currentProduct.id}`" class="space-y-4">
-                @csrf
-                @method('PUT')
-
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-600">
-                        Nome do produto
-                    </label>
-                    <input type="text" name="name" x-model="currentProduct.name"
-                        class="w-full mt-1 px-3 py-2 border rounded-md">
-                    @error('name')
-                        <p class="text-red-500 text-sm">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-
-                <div>
-                    <label for="price" class="block text-sm font-medium text-gray-600">
-                        Preço
-                    </label>
-                    <input type="number" name="price" x-model="currentProduct.price"
-                        class="w-full mt-1 px-3 py-2 border rounded-md">
-                    @error('price')
-                        <p class="text-red-500 text-sm">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-
-                <div class="flex justify-end gap-2 pt-4">
-                    <button type="button" @click="activeModal = null" class="px-4 py-2 text-sm bg-gray-200 rounded-md">
-                        Cancelar
-                    </button>
-
-                    <button type="submit" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md">
-                        Salvar
-                    </button>
-                </div>
-            </form>
-        </x-ui.modal> --}}
+        <x-ui.modal name="customer-edit" title="Editar Cliente">
+            <form method="POST" :action="`/dashboard/customers/${currentCustomer.id}`" class="space-y-4">
+                    @csrf
+                    @method('PUT')
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-600">
+                            Nome do Cliente
+                        </label>
+                        <input type="text" name="name" placeholder="Fulano" x-modal="currentCustomer.name"
+                            class="w-full mt-1 px-3 py-2 border rounded-md">
+                        @error('name')
+                            <p class="text-red-500 text-sm">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-600">
+                            Email
+                        </label>
+                        <input type="text" name="email" placeholder="fulano@email.com"
+                            class="w-full mt-1 px-3 py-2 border rounded-md">
+                        @error('email')
+                            <p class="text-red-500 text-sm">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+    
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-600">
+                            Telefone
+                        </label>
+                        <input type="number" name="phone" placeholder="+55 012 93456-7890"
+                            class="w-full mt-1 px-3 py-2 border rounded-md">
+                        @error('phone')
+                            <p class="text-red-500 text-sm">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+    
+                    <div class="flex justify-end gap-2 pt-4">
+                        <button type="button" @click="activeModal = null" class="px-4 py-2 text-sm bg-gray-200 rounded-md">
+                            Cancelar
+                        </button>
+    
+                        <button type="submit" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md">
+                            Salvar
+                        </button>
+                    </div>
+                </form>
+        </x-ui.modal>
 
     </main>
 </x-layouts.layout-dash>
