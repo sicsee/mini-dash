@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,9 +22,15 @@ class CustomerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CustomerRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        auth()->user()->customers()->create($validated);
+
+        return redirect()
+            ->route('customers.index')
+            ->with('success', 'Cliente criado com sucesso');
     }
 
     /**

@@ -1,7 +1,7 @@
 <x-layouts.layout-dash>
     <main x-data="{
     activeModal: null,
-    currentProduct: {
+    currentCustomer: {
         id: null,
         name: '',
         email: ''
@@ -21,7 +21,7 @@
                 <h1 class="title-dash">Clientes</h1>
 
                 <!-- Modal (Alpine) -->
-                <button @click="activeModal = 'costumer-create'" class="btn btn-lg btn-default">
+                <button @click="activeModal = 'customer-create'" class="btn btn-lg btn-default">
                     Cadastrar Cliente
                 </button>
             </div>
@@ -53,7 +53,7 @@
                     @forelse ($customers as $c)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 text-sm font-medium text-gray-800 border-r border-gray-200">
-                                {{ $p->name }}
+                                {{ $c->name }}
                             </td>
 
                             <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">
@@ -61,24 +61,24 @@
                             </td>
 
                             <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">
-                                {{ $c->phone }}
+                                {{ $c->phone_formatted }}
                             </td>
 
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-2">
                                     <button @click="
-                                        currentProduct = {
+                                        currentCustomer = {
                                             id: {{ $c->id }},
                                             name: '{{ addslashes($c->name) }}',
-                                            email: '{{ addslashes($c->email) }}',
+                                            email: {{ $c->email }},
                                             phone: {{ $c->phone }}
                                         };
-                                        activeModal = 'costumer-edit';
+                                        activeModal = 'customer-edit';
                                     " class="btn btn-sm font-bold bg-blue-600 text-white hover:bg-blue-700">
                                         Editar
                                     </button>
 
-                                    <form action="{{ route('products.destroy', $p) }}" method="POST">
+                                    <form action="{{ route('products.destroy', $c) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-sm font-bold bg-red-600 text-white hover:bg-red-700">
@@ -99,8 +99,8 @@
             </table>
         </section>
 
-        <x-ui.modal name="costumer-create" title="Cadastrar Cliente">
-            <form class="space-y-4" action="{{ route('products.store') }}" method="POST">
+        <x-ui.modal name="customer-create" title="Cadastrar Cliente">
+            <form class="space-y-4" action="{{ route('customers.store') }}" method="POST">
                 @csrf
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-600">
@@ -153,8 +153,8 @@
             </form>
         </x-ui.modal>
 
-        <x-ui.modal name="product-edit" title="Editar Produto">
-            <form method="POST" :action="`/dashboard/products/${currentProduct.id}`" class="space-y-4">
+        {{-- <x-ui.modal name="customer-edit" title="Editar Produto">
+            <form method="POST" :action="`/dashboard/customers/${currentProduct.id}`" class="space-y-4">
                 @csrf
                 @method('PUT')
 
@@ -194,7 +194,7 @@
                     </button>
                 </div>
             </form>
-        </x-ui.modal>
+        </x-ui.modal> --}}
 
     </main>
 </x-layouts.layout-dash>

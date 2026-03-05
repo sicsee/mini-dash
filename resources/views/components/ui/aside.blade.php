@@ -20,7 +20,7 @@
             <span class=" sidebar-tooltip">Produtos</span>
         </a>
 
-        <a href="{{ route('costumers.index') }}" class="sidebar-item">
+        <a href="{{ route('customers.index') }}" class="sidebar-item">
             <x-lucide-user class="w-7 h-7 text-zinc-400 hover:text-black cursor-pointer transition-linear duration-300" />
             <span class="sidebar-tooltip">Clientes</span>
         </a>
