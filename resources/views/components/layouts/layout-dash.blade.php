@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <title>{{ $title ?? config('app.name') }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -13,14 +13,16 @@
 </head>
 
 <body class="relative min-h-screen pl-14">
+
     <x-ui.aside />
-    <div x-data="{ activeModal: null }">
+
+    <div x-data="{ activeModal: null }" x-cloak>
         {{ $slot }}
     </div>
 
     <x-ui.toast />
-    @livewireScripts
-    <script type="module" src="{{ Vite::asset('resource/js/app.js') }}"></script>
-</body>
 
+    @livewireScripts
+
+</body>
 </html>

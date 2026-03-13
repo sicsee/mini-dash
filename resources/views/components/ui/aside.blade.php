@@ -30,7 +30,7 @@
             <span class="sidebar-tooltip">Vendas</span>
         </a>
     </nav>
-    <form class="flex items-center justify-center w-full" action="{{ route('auth.logout') }}" method="POST">
+    <form class="flex items-center justify-center" action="{{ route('auth.logout') }}" method="POST">
         @csrf
         <button type="submit"
             class="bg-red-500 text-white btn btn-sm font-bold absolute bottom-4 hover:bg-red-600 transition-all ease-linear">
