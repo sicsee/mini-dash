@@ -104,4 +104,9 @@ class User extends Authenticatable
 
         return $this->phone;
     }
+
+    public function getTotalSalesAttribute()
+    {
+        return $this->sales()->count();
+    }
 }

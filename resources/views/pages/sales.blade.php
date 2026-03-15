@@ -1,200 +1,187 @@
 <x-layouts.layout-dash>
-
-    <main 
-        x-data="{
-            activeModal: null,
-            formData: { id: null, customer_id: '', sale_date: '', status: 'concluida', notes: '' },
-            items: [],
-
-            openCreate() {
-                this.formData = { id: null, customer_id: '', sale_date: '{{ now()->format('Y-m-d') }}', status: 'concluida', notes: '' };
-                this.items = [{ product_id: '', quantity: 1, price: 0 }];
-                this.activeModal = 'sale-modal';
-            },
-
-            openEdit(sale) {
-                this.formData = {
-                    id: sale.id,
-                    customer_id: sale.customer_id,
-                    sale_date: sale.sale_date.split(' ')[0],
-                    status: sale.status,
-                    notes: sale.notes || ''
-                };
-                this.items = sale.items.map(item => ({
-                    product_id: item.product_id,
-                    quantity: item.quantity,
-                    price: item.price
-                }));
-                this.activeModal = 'sale-modal';
-            },
-
-            addItem() {
-                this.items.push({ product_id: '', quantity: 1, price: 0 });
-            },
-
-            removeItem(index) {
-                if(this.items.length > 1) this.items.splice(index, 1);
-            },
-
-            get totalSale() {
-                const total = this.items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-                return total.toFixed(2);
+    <main x-data="{
+        activeModal: null,
+        formData: { id: null, customer_id: '', sale_date: '{{ now()->format('Y-m-d') }}', status: 'concluida', notes: '' },
+        items: [],
+        productsStock: {{ $products->mapWithKeys(fn($p) => [$p->id => $p->stock->quantity]) }},
+        productsList: {{ $products->mapWithKeys(fn($p) => [$p->id => $p->price]) }},
+    
+        openCreate() {
+            this.formData = { id: null, customer_id: '', sale_date: '{{ now()->format('Y-m-d') }}', status: 'concluida', notes: '' };
+            this.items = [{ product_id: '', quantity: 1, price: 0 }];
+            this.activeModal = 'sale-modal';
+        },
+    
+        openEdit(sale) {
+            let formattedDate = sale.sale_date ? sale.sale_date.split('T')[0].split(' ')[0] : '';
+            this.formData = {
+                id: sale.id,
+                customer_id: sale.customer_id,
+                sale_date: formattedDate,
+                status: sale.status,
+                notes: sale.notes || ''
+            };
+            this.items = sale.items.map(item => ({
+                product_id: item.product_id,
+                quantity: parseInt(item.quantity),
+                price: parseFloat(item.price_at_sale)
+            }));
+            this.activeModal = 'sale-modal';
+        },
+    
+        updatePrice(index) {
+            const productId = this.items[index].product_id;
+            if (productId && this.productsList[productId]) {
+                this.items[index].price = parseFloat(this.productsList[productId]);
             }
-        }"
-        class="container-dash"
-    >
+        },
+    
+        addItem() { this.items.push({ product_id: '', quantity: 1, price: 0 }); },
+        removeItem(index) { if (this.items.length > 1) this.items.splice(index, 1); },
+    
+        hasEnoughStock(index) {
+            const item = this.items[index];
+            if (!item.product_id) return true;
+            return item.quantity <= this.productsStock[item.product_id];
+        },
+    
+        get totalSale() {
+            return this.items.reduce((sum, item) => {
+                const qty = parseFloat(item.quantity) || 0;
+                const price = parseFloat(item.price) || 0;
+                return sum + (qty * price);
+            }, 0).toFixed(2);
+        },
+    
+        get totalFormatted() {
+            return parseFloat(this.totalSale).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+    }"
+        class="min-h-screen bg-white flex flex-col px-6 lg:px-12 py-8 lg:py-10 font-sans antialiased text-black">
 
-        <header class="flex flex-col items-center w-full max-w-7xl mt-10 gap-10">
-            <x-ui.card>
-                <x-ui.card-title>
-                    Total de vendas: {{ auth()->user()->sales()->count() }}
-                </x-ui.card-title>
-                <x-lucide-shopping-cart class="w-7 h-7"/>
-            </x-ui.card>
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 lg:mb-12 gap-6">
+            <div>
+                <h1 class="text-3xl font-black tracking-tight">Vendas</h1>
+                <p class="text-xs text-zinc-400 font-bold uppercase tracking-widest mt-1">Histórico de Transações</p>
+            </div>
 
-            <div class="flex justify-between w-full">
-                <h1 class="title-dash">Vendas</h1>
-                <button @click="openCreate()" class="btn btn-lg btn-default">
+            <div class="flex items-center justify-between w-full md:w-auto gap-6">
+                <div class="text-left md:text-right border-r border-zinc-100 pr-6">
+                    <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Volume Total</p>
+                    <p class="text-lg font-black">{{ auth()->user()->sales()->count() }}</p>
+                </div>
+                <button @click="openCreate()"
+                    class="h-12 px-6 lg:px-8 bg-black text-white rounded-xl text-[10px] lg:text-xs font-black uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-200">
                     Registrar Venda
                 </button>
             </div>
         </header>
 
-        <section class="bg-white rounded-xl shadow-sm border border-gray-200 table-container w-full mt-6">
-            <table class="min-w-full border-collapse">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">Cliente</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">Data</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">Total</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200">Status</th>
-                        <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse ($sales as $sale)
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 text-sm font-medium text-gray-800 border-r border-gray-200">{{ $sale->customer->name }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">{{ $sale->sale_date->format('d/m/Y') }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">R$ {{ number_format($sale->total_amount, 2, ',', '.') }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-800 border-r border-gray-200">{{ ucfirst($sale->status) }}</td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex justify-end gap-2">
-                                <button @click="openEdit({{ $sale->load('items') }})" class="btn btn-sm font-bold bg-blue-600 text-white hover:bg-blue-700">
-                                    Editar
-                                </button>
-                                <form action="{{ route('sales.destroy', $sale) }}" method="POST" onsubmit="return confirm('Deseja excluir?')">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-sm font-bold bg-red-600 text-white hover:bg-red-700">
-                                        Excluir
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-6 text-center text-sm text-gray-500">Nenhuma venda registrada</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <section class="hidden lg:block bg-white border border-zinc-100 rounded-3xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-zinc-50 border-b border-zinc-100">
+                        <tr>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">Cliente
+                            </th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">Data
+                            </th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">Total
+                            </th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">Status
+                            </th>
+                            <th
+                                class="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                                Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-50">
+                        @forelse ($sales as $sale)
+                            <tr class="hover:bg-zinc-50/50 transition-colors group">
+                                <td class="px-8 py-5 font-bold text-sm text-zinc-900">{{ $sale->customer->name }}</td>
+                                <td class="px-8 py-5 text-sm text-zinc-600">{{ dataFormatada($sale->sale_date) }}</td>
+                                <td class="px-8 py-5 text-sm font-black text-zinc-900">R$
+                                    {{ number_format($sale->total_amount, 2, ',', '.') }}</td>
+                                <td class="px-8 py-5">
+                                    <span @class([
+                                        'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter border',
+                                        'bg-green-50 text-green-600 border-green-600' =>
+                                            $sale->status === 'concluida',
+                                        'bg-yellow-50 text-yellow-600 border-yellow-600' =>
+                                            $sale->status === 'pendente',
+                                        'bg-rose-50 text-rose-600 border-rose-100' => $sale->status === 'cancelada',
+                                    ])>
+                                        {{ $sale->status }}
+                                    </span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <div class="flex justify-end gap-4 items-center">
+                                        <button @click="openEdit({{ $sale->load('items') }})"
+                                            class="text-[10px] font-black uppercase text-zinc-400 hover:text-black transition-colors">Detalhes</button>
+                                        <form class="mb-1" action="{{ route('sales.destroy', $sale) }}"
+                                            method="POST" onsubmit="return confirm('Excluir?')">
+                                            @csrf @method('DELETE')
+                                            <button
+                                                class="text-[10px] font-black uppercase text-zinc-300 hover:text-red-600 transition-colors">Excluir</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </section>
 
-        <x-ui.modal name="sale-modal" title="Formulário de Venda">
-            <div class="mb-4">
-                <h2 class="text-lg font-semibold text-gray-800" x-text="formData.id ? 'Editar Venda #' + formData.id : 'Registrar Nova Venda'"></h2>
-            </div>
-
-            <form 
-                :action="formData.id ? `/dashboard/sales/${formData.id}` : '{{ route('sales.store') }}'" 
-                method="POST" 
-                class="space-y-6"
-            >
-                @csrf
-                <template x-if="formData.id">
-                    <input type="hidden" name="_method" value="PUT">
-                </template>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Cliente</label>
-                        <select x-model="formData.customer_id" name="customer_id" required class="w-full mt-1 px-3 py-2 border rounded-md text-sm bg-white">
-                            <option value="">Selecione um cliente</option>
-                            @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                            @endforeach
-                        </select>
+        <section class="lg:hidden space-y-4 pb-24">
+            @forelse ($sales as $sale)
+                <div class="p-6 bg-white border border-zinc-100 rounded-[28px] shadow-sm">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">
+                                {{ dataFormatada($sale->sale_date) }}</p>
+                            <h3 class="text-base font-black text-zinc-900 leading-tight">{{ $sale->customer->name }}
+                            </h3>
+                        </div>
+                        <span @class([
+                            'px-2 py-0.5 rounded-full text-[9px] font-black uppercase border',
+                            'bg-green-50 text-green-600 border-green-600' =>
+                                $sale->status === 'concluida',
+                            'bg-yellow-50 text-yellow-600 border-yellow-600' =>
+                                $sale->status === 'pendente',
+                        ])>
+                            {{ $sale->status }}
+                        </span>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Data da venda</label>
-                        <input type="date" x-model="formData.sale_date" name="sale_date" class="w-full mt-1 px-3 py-2 border rounded-md text-sm">
-                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-zinc-50">
+                        <p class="text-lg font-black text-zinc-950">R$
+                            {{ number_format($sale->total_amount, 2, ',', '.') }}</p>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600">Status</label>
-                        <select x-model="formData.status" name="status" class="w-full mt-1 px-3 py-2 border rounded-md text-sm bg-white">
-                            <option value="concluida">Concluída</option>
-                            <option value="pendente">Pendente</option>
-                            <option value="cancelada">Cancelada</option>
-                        </select>
-                    </div>
-                </div>
-
-                <section class="space-y-3">
-                    <div class="flex items-center justify-between border-b pb-2">
-                        <h3 class="text-xs font-bold text-gray-500 uppercase">Itens</h3>
-                        <button type="button" @click="addItem()" class="text-xs font-bold text-blue-600 hover:underline">+ ADICIONAR ITEM</button>
-                    </div>
-
-                    <div class="space-y-3 max-h-[250px] overflow-y-auto">
-                        <template x-for="(item, index) in items" :key="index">
-                            <div class="grid grid-cols-12 gap-2 items-end p-3 bg-gray-50 rounded-lg border border-gray-100">
-                                <div class="col-span-12 md:col-span-5">
-                                    <label class="text-[10px] font-bold text-gray-400 uppercase">Produto</label>
-                                    <select x-model="item.product_id" :name="`items[${index}][product_id]`" required class="w-full mt-1 px-2 py-1.5 border rounded text-xs bg-white">
-                                        <option value="">Selecione</option>
-                                        @foreach($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-span-4 md:col-span-2">
-                                    <label class="text-[10px] font-bold text-gray-400 uppercase">Qtd</label>
-                                    <input type="number" x-model.number="item.quantity" :name="`items[${index}][quantity]`" min="1" class="w-full mt-1 px-2 py-1.5 border rounded text-xs text-center">
-                                </div>
-                                <div class="col-span-5 md:col-span-3">
-                                    <label class="text-[10px] font-bold text-gray-400 uppercase">Preço (R$)</label>
-                                    <input type="number" step="0.01" x-model.number="item.price" :name="`items[${index}][price]`" class="w-full mt-1 px-2 py-1.5 border rounded text-xs text-right">
-                                </div>
-                                <div class="col-span-3 md:col-span-2 flex justify-end">
-                                    <button type="button" @click="removeItem(index)" class="p-2 text-red-500 hover:bg-red-50 rounded">
-                                        <x-lucide-trash class="w-4 h-4"/>
-                                    </button>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </section>
-
-                <div class="flex justify-between items-center pt-4 border-t">
-                    <div class="text-sm">
-                        <span class="text-gray-500">Total:</span>
-                        <span class="font-bold text-gray-800 ml-1">R$ <span x-text="totalSale.replace('.', ',')"></span></span>
-                    </div>
-
-                    <div class="flex gap-2">
-                        <button type="button" @click="activeModal = null" class="px-4 py-2 text-sm bg-gray-200 rounded-md">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-                            Salvar Venda
-                        </button>
+                        <div class="flex gap-2 items-center">
+                            <button @click="openEdit({{ $sale->load('items') }})"
+                                class="h-10 px-4 bg-zinc-50 rounded-xl text-[10px] font-black uppercase hover:bg-zinc-100 transition-all">
+                                Detalhes
+                            </button>
+                            <form action="{{ route('sales.destroy', $sale) }}" method="POST">
+                                @csrf @method('DELETE')
+                                <button
+                                    class="h-10 w-10 flex items-center justify-center bg-rose-50 text-rose-600 rounded-xl">
+                                    <x-lucide-trash-2 class="w-4 h-4" />
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </form>
-        </x-ui.modal>
+            @empty
+                <div class="py-20 text-center text-zinc-300 font-medium">Nenhuma venda.</div>
+            @endforelse
+        </section>
 
+        <x-ui.sales-modal :products="$products" :customers="$customers" name="sale-modal" />
     </main>
 </x-layouts.layout-dash>

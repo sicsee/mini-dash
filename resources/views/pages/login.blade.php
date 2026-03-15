@@ -1,58 +1,83 @@
 <x-layouts.layout>
-  <main class="flex items-center justify-center h-screen w-full bg-zinc-200">
-  <section class="w-1/2 h-full flex justify-center items-center">
-    <div class="flex flex-col w-110 p-10 shadow-xl shadow-zinc-400 rounded-2xl bg-white">
-      <h1 class="font-medium text-3xl">
-        Faça Login
-      </h1>
+    <main class="min-h-screen w-full bg-zinc-50 flex items-center justify-center p-4 md:p-0">
 
-      <p class="my-2">
-        Insira seus dados para acessar a sua conta
-      </p>
+        <section class="w-full md:w-1/2 h-full flex justify-center items-center">
+            <div
+                class="w-full max-w-md bg-white p-8 md:p-12 rounded-[32px] md:rounded-none shadow-2xl shadow-zinc-200 md:shadow-none transition-all">
 
-      <form action="{{ route('auth.login')}} " method="POST" class="flex flex-col ">
-        @csrf
+                <header class="mb-10 text-center md:text-left">
+                    <h1 class="text-4xl font-black tracking-tighter text-zinc-900">
+                        Acesse a <span class="font-serif italic font-light">Plataforma</span>
+                    </h1>
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mt-3">
+                        Insira suas credenciais de acesso
+                    </p>
+                </header>
 
-        <div class="flex flex-col mb-4">
-          <label for="email" class="font-medium italic ">Email</label>
-          <input type="email" name="email" placeholder="you@email.com" class="w-full px-4 py-2 bg-white border-2 rounded-lg focus:border-blue-500 transition-all duration-200 placeholder-gray-400 text-gray-900 hover:border-gray-400 shadow-sm @error('email') border-red-500 @enderror">
-          @error('email')
-            <p class="text-red-500 text-sm">
-              {{ $message }}
-            </p>
-          @enderror
-        </div>
+                <form action="{{ route('auth.login') }}" method="POST" class="space-y-6">
+                    @csrf
 
-        <div class="flex flex-col mb-4">
-          <label for="password" class="font-medium italic ">Senha</label>
-          <input type="password" name="password" placeholder="**********" class="w-full px-4 py-2 bg-white border-2 rounded-lg focus:border-blue-500 transition-all duration-200 placeholder-gray-400 text-gray-900 hover:border-gray-400 shadow-sm @error('password') border-red-500 @enderror">
-          @error('password')
-            <p class="text-red-500 text-sm">
-              {{ $message }}
-            </p>
-          @enderror
-        </div>
+                    <div class="space-y-1.5">
+                        <label for="email"
+                            class="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">E-mail
+                            Corporativo</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required
+                            placeholder="exemplo@dominio.com"
+                            class="w-full h-14 px-6 rounded-2xl border  bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none @error('email') border-red-500 @enderror">
+                        @error('email')
+                            <p class="text-red-500 text-[10px] font-bold mt-1 ml-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-        <button type="submit" class="bg-blue-500 h-10 rounded-lg text-white font-bold cursor-pointer hover:bg-blue-700 transition-all linear duration-300 mt-2">Entrar</button>
-      </form>
+                    <div class="space-y-1.5">
+                        <label for="password"
+                            class="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">Senha de
+                            Segurança</label>
+                        <input type="password" name="password" required placeholder="••••••••••••"
+                            class="w-full h-14 px-6 rounded-2xl border  bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none @error('password') border-red-500 @enderror">
+                        @error('password')
+                            <p class="text-red-500 text-[10px] font-bold mt-1 ml-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-      <p class="text-center mt-4">
-        Não tem uma conta?
-          <a href="{{ route('site.register') }}" class="underline hover:opacity-50 transition">
-            Registre-se
-          </a>
-      </p>
+                    <button type="submit"
+                        class="w-full h-14 bg-black text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-200 mt-4">
+                        Entrar no Sistema
+                    </button>
+                </form>
 
-    </div>
-    </section>
-    <section class="hidden sm:block w-1/2 h-full p-4">
-     <div class="bg-center bg-cover bg-no-repeat w-full h-full rounded-2xl flex justify-center" style="background-image: url({{ asset('images/bg-black.jpg') }})">
-      <div class="flex items-center justify-center gap-2">
-        <x-lucide-globe class="text-white w-9 h-9"/>
-        <h1 class="text-2xl font-bold text-white">Mini Dash</h1>
-     </div>
-    </section>
-  </main>
+                <footer class="mt-10 text-center md:text-left">
+                    <p class="text-xs font-bold text-zinc-400">
+                        Não possui acesso?
+                        <a href="{{ route('site.register') }}"
+                            class="text-black underline underline-offset-4 hover:opacity-60 transition font-black">
+                            Solicitar Registro
+                        </a>
+                    </p>
+                </footer>
+            </div>
+        </section>
+
+        <section class="hidden md:block md:w-1/2 h-screen p-6">
+            <div class="relative w-full h-full rounded-[40px] overflow-hidden bg-zinc-900 shadow-2xl">
+                <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+
+                <div class="absolute inset-0 bg-center bg-cover bg-no-repeat transition-transform duration-700 hover:scale-105"
+                    style="background-image: url({{ asset('images/bg-black.jpg') }})">
+                </div>
+
+                <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-white p-12">
+                    <div class="flex items-center gap-3 mb-4">
+                        <x-lucide-globe class="w-8 h-8 text-white/50 animate-pulse" />
+                        <span class="text-xs font-black uppercase tracking-[0.5em]">Global Control</span>
+                    </div>
+                    <h2 class="text-5xl font-black tracking-tighter">Mini Dash</h2>
+                    <p
+                        class="mt-4 text-white/40 text-[10px] font-black uppercase tracking-widest text-center leading-loose">
+                        Gestão simplificada com<br>estética contemporânea
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
 </x-layouts.layout>
-
-

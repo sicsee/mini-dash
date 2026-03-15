@@ -1,57 +1,56 @@
 @php
-    $type = session()->has('success') ? 'success'
-        : (session()->has('error') ? 'error'
-        : 'warning');
+    $type = session()->has('success')
+        ? 'success'
+        : (session()->has('error')
+            ? 'error'
+            : (session()->has('warning')
+                ? 'warning'
+                : null));
 
-    $message = session($type);
+    $message = $type ? session($type) : null;
 
-    $styles = [
-        'success' => 'border-green-500 bg-green-50 text-green-800',
-        'error' => 'border-red-500 bg-red-50 text-red-800',
-        'warning' => 'border-yellow-500 bg-yellow-50 text-yellow-800',
+    $config = [
+        'success' => ['class' => 'bg-zinc-950 text-white', 'icon' => 'lucide-check-circle', 'label' => 'Sucesso'],
+        'error' => ['class' => 'bg-rose-600 text-white', 'icon' => 'lucide-ban', 'label' => 'Erro'],
+        'warning' => ['class' => 'bg-amber-500 text-black', 'icon' => 'lucide-triangle-alert', 'label' => 'Atenção'],
     ];
 @endphp
 
+@if ($message)
+    <div x-data="{
+        show: false,
+        init() {
+            setTimeout(() => this.show = true, 100);
+            setTimeout(() => this.show = false, 5000);
+        }
+    }" x-show="show" x-cloak x-transition:enter="transition ease-out duration-500"
+        x-transition:enter-start="translate-y-12 opacity-0 scale-90"
+        x-transition:enter-end="translate-y-0 opacity-100 scale-100" x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
+        class="fixed bottom-10 right-6 z-100 flex items-center gap-4 px-6 py-4 rounded-[24px] shadow-2xl shadow-black/20 {{ $config[$type]['class'] }} border border-white/10">
+        {{-- Ícone com Círculo de destaque --}}
+        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white/20">
+            @if ($type === 'success')
+                <x-lucide-check class="w-5 h-5 text-white" />
+            @elseif($type === 'error')
+                <x-lucide-ban class="w-5 h-5 text-white" />
+            @else
+                <x-lucide-triangle-alert class="w-5 h-5 text-black" />
+            @endif
+        </div>
 
-@if(session()->has('success') || session()->has('error') || session()->has('warning'))
+        <div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-70 leading-none mb-1">
+                {{ $config[$type]['label'] }}
+            </p>
+            <p class="text-sm font-bold tracking-tight">
+                {{ $message }}
+            </p>
+        </div>
 
-<div
-    id="toast"
-    class="fixed right-5 top-20 flex items-center gap-3 
-    border-l-4 {{ $styles[$type] }}
-    shadow-lg rounded-lg
-    px-5 py-4
-    min-w-[280px]
-    animate-toast-in
-    backdrop-blur-sm
-"
->
-
-    {{-- ICON --}}
-    <div class="shrink-0">
-        @switch($type)
-            @case('success')
-                <x-lucide-check class="w-6 h-6"/>
-                @break
-
-            @case('error')
-                <x-lucide-ban class="w-6 h-6"/>
-                @break
-
-            @case('warning')
-                <x-lucide-triangle-alert class="w-6 h-6"/>
-                @break
-        
-            @default
-                <x-lucide-circle-alert class="w-6 h-6"/>
-        @endswitch
+        {{-- Botão de fechar manual --}}
+        <button @click="show = false" class="ml-4 opacity-50 hover:opacity-100 transition-opacity">
+            <x-lucide-x class="w-4 h-4" />
+        </button>
     </div>
-
-    {{-- MESSAGE --}}
-    <p class="text-sm font-medium">
-        {{ $message }}
-    </p>
-
-</div>
-
 @endif
