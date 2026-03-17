@@ -1,115 +1,93 @@
-## Mini Dash – Dashboard de Produtos e Estoque
+# 🚀 Mini Dash: Gestão Inteligente de Ativos e Vendas
 
-### 1. Visão Geral
+## 1. Visão Geral do Projeto
 
-O **Mini Dash** é um pequeno painel administrativo para gestão de **produtos** e **estoque**, desenvolvido com **Laravel 12**.  
-Ele oferece autenticação de usuários, um **dashboard** protegido e telas para cadastrar, listar, atualizar e remover produtos, além do controle de estoque.
+O **Mini Dash** é um ecossistema ERP minimalista de alta performance, projetado para oferecer controle total sobre o fluxo comercial de pequenas operações. O foco central do projeto é a **clareza operacional**, transformando dados complexos de estoque, clientes e vendas em uma interface limpa, intuitiva e totalmente responsiva (Mobile-First).
 
-Este projeto foi criado como exercício prático de desenvolvimento **full stack** com foco em:
+Este projeto foi desenvolvido como um portfólio de alto nível, demonstrando domínio avançado em **Laravel 12**, arquitetura de sistemas escalável e design de interface focado na estética contemporânea.
 
-- **Autenticação** e proteção de rotas.
-- **CRUD** de recursos (produtos e estoque).
-- Organização em **controllers**, **views Blade** e **rotas** seguindo o padrão do Laravel.
+### 💎 Diferenciais de UX
 
----
-
-### 2. Funcionalidades Principais
-
-- **Página inicial pública** (`/`): apresentação simples do sistema.
-- **Cadastro de usuário** (`/register`): criação de conta.
-- **Login** (`/login`): autenticação de usuários.
-- **Logout** (`/logout`): encerramento de sessão.
-- **Dashboard protegido** (`/dashboard`): acessível apenas para usuários autenticados.
-- **Gestão de produtos** (`/dashboard/products`):
-  - Listagem de produtos do usuário autenticado.
-  - Criação, atualização e exclusão de produtos.
-- **Gestão de estoque** (`/dashboard/stocks`):
-  - Listagem e manutenção de registros de estoque vinculados aos produtos.
+- **Design Cinematográfico:** Landing Page com efeitos de Glassmorphism e tipografia refinada.
+- **Interface Híbrida:** Tabelas densas para desktop que se transformam em Cards táteis no mobile.
+- **Feedback Premium:** Sistema de notificações (Toasts) com auto-hide e animações suaves via Alpine.js.
 
 ---
 
-### 3. Tecnologias Utilizadas
+## 2. Funcionalidades Principais
 
-- **PHP 8.2+** com **Laravel 12**.
-- **Blade** para renderização de views.
-- **Tailwind CSS** para estilização da interface.
-- **Eloquent ORM** para interação com o banco de dados relacional (ex.: MySQL).
-- **NPM / Vite** para build e assets front-end.
+- **Dashboard Executivo:** Visão geral do faturamento total (vendas concluídas) e volume de ativos.
+- **Gestão de Estoque (Inventory):** Controle preciso de quantidades com alertas visuais pulsantes para itens abaixo do nível crítico.
+- **Catálogo de Produtos:** CRUD completo de itens com organização por proprietário.
+- **CRM Integrado:** Gestão de base de clientes com identificação visual por avatares minimalistas.
+- **Fluxo de Vendas:** Registro de transações financeiras integradas ao sistema.
+- **Segurança:** Proteção total de rotas e isolamento de dados por usuário (Multi-tenancy básico).
 
 ---
 
-### 4. Como Rodar o Projeto Localmente
+## 3. Stack Tecnológica
+
+O projeto utiliza as ferramentas mais modernas do ecossistema PHP:
+
+- **Laravel 12:** Framework core para lógica de negócio e segurança.
+- **Alpine.js:** Reatividade leve para modais, menus laterais (Drawers) e interações de UI.
+- **Tailwind CSS:** Estilização customizada com foco em design minimalista ("Luxury Dark/Light mode").
+- **Eloquent ORM:** Manipulação otimizada de banco de dados com Query Scopes para métricas financeiras.
+- **Lucide Icons:** Conjunto de ícones vetoriais para uma interface limpa e intuitiva.
+- **Vite:** Build de ativos ultra-rápido para performance máxima.
+
+---
+
+## 4. Como Rodar o Projeto Localmente
 
 #### 4.1. Pré-requisitos
 
 - PHP 8.2 ou superior.
 - Composer.
-- Node.js e NPM.
-- Servidor de banco de dados (ex.: MySQL).
+- Node.js & NPM.
+- Servidor MySQL.
 
-#### 4.2. Passos básicos
+#### 4.2. Instalação
 
-No diretório do projeto:
+1.  **Clone o repositório:**
 
-1. Instale as dependências PHP:
+    ```bash
+    git clone [https://github.com/sicsee/mini-dash.git](https://github.com/sicsee/mini-dash.git)
+    cd mini-dash
+    ```
 
-   ```bash
-   composer install
-   ```
+2.  **Dependências e Configuração:**
 
-2. Copie o arquivo de ambiente e configure o banco:
+    ```bash
+    composer install
+    npm install
+    cp .env.example .env
+    php artisan key:generate
+    ```
 
-   ```bash
-   cp .env.example .env
-   # Edite .env e configure DB_*, APP_URL, etc.
-   ```
+3.  **Banco de Dados:**
+    _Crie um banco no MySQL e configure as credenciais no seu `.env`._
 
-3. Gere a chave da aplicação:
+    ```bash
+    php artisan migrate
+    ```
 
-   ```bash
-   php artisan key:generate
-   ```
+4.  **Execução (Ambiente de Desenvolvimento):**
+    Abra dois terminais:
 
-4. Rode as migrations:
+    ```bash
+    # Terminal 1
+    php artisan serve
 
-   ```bash
-   php artisan migrate
-   ```
-
-5. Instale as dependências front-end:
-
-   ```bash
-   npm install
-   ```
-
-6. Suba o servidor de desenvolvimento e o build front-end (em terminais separados):
-
-   ```bash
-   php artisan serve
-   npm run dev
-   ```
-
-Ou, se preferir usar o script de desenvolvimento definido no `composer.json`:
-
-```bash
-composer run dev
-```
+    # Terminal 2
+    npm run dev
+    ```
 
 ---
 
-### 5. Rotas Principais
+## 5. Desenvolvedor
 
-- `GET /` → página inicial.
-- `GET /register` / `POST /register` → cadastro de usuário.
-- `GET /login` / `POST /login` → login.
-- `POST /logout` → logout (apenas autenticado).
-- `GET /dashboard` → dashboard com visão geral dos produtos do usuário.
-- `resource /dashboard/products` → CRUD de produtos (exceto create/show/edit por view dedicada).
-- `resource /dashboard/stocks` → CRUD de estoques (exceto create/show/edit por view dedicada).
-
----
-
-### 6. Desenvolvedor
+Apresentação do responsável pela arquitetura e design.
 
 | Detalhe           | Informação                                                                 |
 | ----------------- | -------------------------------------------------------------------------- |
@@ -119,7 +97,8 @@ composer run dev
 
 ---
 
-### 7. Notas Finais
+## 6. Aprendizados e Desafios
 
-O projeto foi desenvolvido manualmente com foco em boas práticas do ecossistema Laravel, organização de código e uma base sólida para evolução futura do painel (novos módulos, relatórios, etc.).
-
+- **Refatoração Responsiva:** Superação do desafio de exibir tabelas de dados complexas em telas de smartphones sem perda de usabilidade.
+- **Global State com Alpine.js:** Gerenciamento de estados de UI (como menus laterais e modais) sem a necessidade de frameworks pesados de JS.
+- **Query Optimization:** Uso de somatórios condicionais no banco de dados para garantir que o dashboard reflita apenas dados financeiros reais (vendas concluídas).
