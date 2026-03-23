@@ -12,7 +12,7 @@
     @livewireStyles
 </head>
 
-<body class="relative min-h-screen bg-white font-sans antialiased text-black">
+<body class="relative min-h-screen bg-white antialiased text-black font-sans">
 
 
     <div x-data="{ activeModal: null }" x-cloak class="flex flex-col min-h-screen px-4 md:px-0">

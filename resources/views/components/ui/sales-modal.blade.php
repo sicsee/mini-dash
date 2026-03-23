@@ -1,6 +1,6 @@
 @props(['products', 'customers', 'name'])
 
-<div x-show="activeModal === '{{ $name }}'" x-transition.opacity
+<section x-show="activeModal === '{{ $name }}'" x-transition.opacity
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" style="display: none;"
     @keydown.escape.window="activeModal = null">
 
@@ -17,7 +17,7 @@
                 <input type="hidden" name="_method" value="PUT">
             </template>
 
-            <div class="px-8 py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
+            <div class="px-8 py-6 border-b border-zinc-700 flex items-center justify-between bg-zinc-50/50">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 bg-zinc-900 rounded-lg flex items-center justify-center text-white shadow-sm">
                         <x-lucide-dollar-sign class="w-5 h-5" />
@@ -25,7 +25,8 @@
                     <div>
                         <h2 class="text-lg font-bold text-zinc-900 leading-none"
                             x-text="formData.id ? 'Editar Venda #' + formData.id : 'Nova Venda'"></h2>
-                        <p class="text-xs text-zinc-500 mt-1 uppercase tracking-wider font-medium">Painel de Transação
+                        <p class="text-xs text-zinc-500 mt-1 uppercase tracking-wider font-bold">
+                            Painel de Transação
                         </p>
                     </div>
                 </div>
@@ -42,7 +43,7 @@
                         <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Cliente
                             Responsável</label>
                         <select x-model="formData.customer_id" name="customer_id" required
-                            class="w-full h-11 px-4 rounded-xl border border-zinc-200 bg-white focus:border-zinc-900 focus:ring-0 transition-all text-sm outline-none">
+                            class="w-full h-11 px-4 rounded-xl border border-zinc-700 bg-white focus:border-zinc-900 focus:ring-0 transition-all text-sm outline-none">
                             <option value="">Selecione...</option>
                             @foreach ($customers as $customer)
                                 <option value="{{ $customer->id }}">{{ $customer->name }}</option>
@@ -53,12 +54,12 @@
                         <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Data de
                             Emissão</label>
                         <input x-model="formData.sale_date" type="date" name="sale_date"
-                            class="w-full h-11 px-4 rounded-xl border border-zinc-200 bg-white focus:border-zinc-900 transition-all text-sm outline-none">
+                            class="w-full h-11 px-4 rounded-xl border border-zinc-700 bg-white focus:border-zinc-900 transition-all text-sm outline-none">
                     </div>
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Status</label>
                         <select x-model="formData.status" name="status"
-                            class="w-full h-11 px-4 rounded-xl border border-zinc-200 bg-white focus:border-zinc-900 transition-all text-sm font-semibold outline-none">
+                            class="w-full h-11 px-4 rounded-xl border border-zinc-700 bg-white focus:border-zinc-900 transition-all text-sm font-semibold outline-none">
                             <option value="concluida">Concluída</option>
                             <option value="pendente">Pendente</option>
                             <option value="cancelada">Cancelada</option>
@@ -71,7 +72,7 @@
                         <h3 class="text-[11px] font-bold text-zinc-900 uppercase tracking-[0.2em]">Listagem de Produtos
                         </h3>
                         <button type="button" @click="addItem()"
-                            class="px-4 py-1.5 text-[10px] font-black bg-zinc-100 text-zinc-600 rounded-full hover:bg-zinc-900 hover:text-white transition-all uppercase">
+                            class="px-4 py-1.5 text-[10px] font-black border border-zinc-700 text-zinc-600 rounded-full hover:bg-zinc-900 hover:text-white transition-all uppercase">
                             + Adicionar Item
                         </button>
                     </div>
@@ -92,7 +93,7 @@
                                 <div class="w-full md:flex-1">
                                     <select x-model="item.product_id" @change="updatePrice(index)"
                                         :name="'items[' + index + '][product_id]'"
-                                        class="w-full h-10 px-3 border-transparent bg-zinc-100/50 rounded-lg text-sm focus:bg-white focus:border-zinc-200 transition-all outline-none">
+                                        class="w-full h-10 px-3 border border-zinc-700 bg-zinc-100/50 rounded-lg text-sm focus:bg-white focus:border-zinc-200 transition-all outline-none">
                                         <option value="">Buscar produto...</option>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -103,7 +104,7 @@
                                     <input type="number" min="1" x-model.number="item.quantity"
                                         :name="'items[' + index + '][quantity]'"
                                         :class="!hasEnoughStock(index) ? 'border-red-500 bg-red-50' :
-                                            'border-transparent bg-zinc-100/50'"
+                                            'border border-zinc-700 bg-zinc-100/50'"
                                         class="w-full h-10 text-center text-sm font-bold border rounded-lg focus:bg-white transition-all outline-none">
 
                                     <template x-if="item.product_id && !hasEnoughStock(index)">
@@ -120,7 +121,7 @@
                                             class="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-zinc-400">R$</span>
                                         <input type="number" step="0.01" x-model.number="item.price"
                                             :name="'items[' + index + '][price]'"
-                                            class="w-full h-10 pl-8 pr-3 bg-zinc-100/50 rounded-lg text-sm border-transparent focus:bg-white focus:border-zinc-200 transition-all text-right font-medium outline-none">
+                                            class="w-full h-10 pl-8 pr-3 bg-zinc-100/50 rounded-lg text-sm border border-zinc-700 focus:bg-white focus:border-zinc-200 transition-all text-right font-medium outline-none">
                                     </div>
                                 </div>
                                 <div class="w-full md:w-40 text-right">
@@ -142,7 +143,7 @@
                     <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Notas
                         Adicionais</label>
                     <textarea x-model="formData.notes" name="notes" rows="2"
-                        class="w-full p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 focus:bg-white transition-all text-sm resize-none outline-none"
+                        class="w-full p-4 rounded-xl border border-zinc-700 bg-zinc-50/50 focus:bg-white transition-all text-sm resize-none outline-none"
                         placeholder="Observações da venda..."></textarea>
                 </div>
             </div>
@@ -175,4 +176,4 @@
             </div>
         </form>
     </div>
-</div>
+</section>

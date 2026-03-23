@@ -62,8 +62,15 @@
                                     </button>
                                 </td>
                             </tr>
-                        @empty
-                        @endforelse
+                            @empty
+                            <tr>
+                                <td colspan="3" class="px-8 py-12 text-center">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <p class="py-20 text-center text-zinc-400 font-bold">Nenhum item no estoque</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
                     </tbody>
                 </table>
             </div>
@@ -99,7 +106,7 @@
                     </button>
                 </div>
             @empty
-                <div class="py-20 text-center text-zinc-300 font-medium">Nenhum item em estoque.</div>
+                <p class="py-20 text-center text-zinc-300 font-medium">Nenhum item em estoque</p>
             @endforelse
         </section>
 
@@ -134,7 +141,7 @@
                                 class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Produto</label>
                             <template x-if="activeModal === 'stock-create'">
                                 <select name="product_id"
-                                    class="w-full h-12 px-4 rounded-xl border border-zinc-100 bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none appearance-none">
+                                    class="w-full h-12 px-4 rounded-xl border border-zinc-700 bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none appearance-none">
                                     @foreach ($stocks as $s)
                                         <option value="{{ $s->product->id }}">{{ $s->product->name }}</option>
                                     @endforeach
@@ -150,14 +157,13 @@
                             <label class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Quantidade em
                                 Estoque</label>
                             <input type="number" name="quantity" x-model="currentProduct.quantity" required
-                                class="w-full h-12 px-4 rounded-xl border border-zinc-100 bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none">
+                                class="w-full h-12 px-4 rounded-xl border border-zinc-700 bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none">
                         </div>
 
                         <div class="pt-4 flex gap-3">
                             <button type="button" @click="activeModal = null"
                                 class="flex-1 h-12 text-xs font-black uppercase tracking-widest text-zinc-400 hover:text-black">Cancelar</button>
-                            <button type="submit"
-                                class="flex-1 h-12 bg-black text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-lg">Salvar
+                            <button type="submit" class="flex-1 h-12 bg-black text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-lg">Salvar
                                 Saldo</button>
                         </div>
                     </form>

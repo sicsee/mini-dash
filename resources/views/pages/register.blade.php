@@ -80,7 +80,7 @@
                     </button>
                 </form>
 
-                <footer class="mt-8 text-center md:text-left">
+                <footer class="mt-8 text-center">
                     <p class="text-xs font-bold text-zinc-400">
                         Já possui uma conta?
                         <a href="{{ route('site.login') }}"

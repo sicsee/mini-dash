@@ -102,3 +102,4 @@ Apresentação do responsável pela arquitetura e design.
 - **Refatoração Responsiva:** Superação do desafio de exibir tabelas de dados complexas em telas de smartphones sem perda de usabilidade.
 - **Global State com Alpine.js:** Gerenciamento de estados de UI (como menus laterais e modais) sem a necessidade de frameworks pesados de JS.
 - **Query Optimization:** Uso de somatórios condicionais no banco de dados para garantir que o dashboard reflita apenas dados financeiros reais (vendas concluídas).
+- **Framework:** Primeiro projeto desenvolvido com Laravel.

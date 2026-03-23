@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&family=Manrope:wght@200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -6,23 +6,45 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-@theme {
-    --font-sans:
-        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
-        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-        "Noto Color Emoji";
-}
-
 @theme inline {
-    --default-font-family: "Poppins", sans-serif;
+    --font-poppins: "Poppins", sans-serif;
     --font-bodoni: "Libre Bodoni", serif;
     --font-manrope: "Manrope", sans-serif;
+
+    --font-sans: var(--font-poppins);
+
+    --color-primary: #18181b;
+    --radius-md: 0.3rem;
+}
+
+html,
+body {
+    font-family: var(--font-sans);
+}
+
+.font-poppins {
+    font-family: var(--font-poppins);
+}
+
+.font-manrope {
+    font-family: var(--font-manrope);
+}
+
+.font-bodoni {
+    font-family: var(--font-bodoni);
+}
+
+.title-dash {
+    font-weight: bold;
+    font-size: 35px;
+    font-family: var(--font-manrope);
+    text-align: center;
 }
 
 :root {
-    --primary: #18181b; /* Zinc 900 */
+    --primary: #18181b;
     --primary-foreground: #ffffff;
-    --secondary: #f4f4f5; /* Zinc 100 */
+    --secondary: #f4f4f5;
     --secondary-foreground: #18181b;
     --destructive: #ef4444;
     --accent: #f4f4f5;
@@ -57,7 +79,6 @@
     height: 1rem;
 }
 
-/* Variant: Default */
 .btn-default {
     background-color: var(--primary);
     color: var(--primary-foreground);
@@ -216,14 +237,6 @@
 
 button {
     cursor: pointer;
-}
-
-@layer base {
-    body {
-        @apply antialiased text-zinc-900;
-        font-family:
-            "Inter", sans-serif; /* Ou 'Geist' se preferir algo mais moderno */
-    }
 }
 
 /* Customização para esconder scrollbars em widgets se necessário */

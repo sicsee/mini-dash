@@ -46,12 +46,12 @@
                     </button>
                 </form>
 
-                <footer class="mt-10 text-center md:text-left">
+                <footer class="mt-10 text-center">
                     <p class="text-xs font-bold text-zinc-400">
                         Não possui acesso?
                         <a href="{{ route('site.register') }}"
                             class="text-black underline underline-offset-4 hover:opacity-60 transition font-black">
-                            Solicitar Registro
+                                Crie sua conta
                         </a>
                     </p>
                 </footer>

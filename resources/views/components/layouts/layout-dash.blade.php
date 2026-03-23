@@ -9,7 +9,7 @@
     @livewireStyles
 </head>
 
-<body x-data="{ mobileMenu: false, activeModal: null }" class="relative min-h-screen bg-white text-black antialiased">
+<body x-data="{ mobileMenu: false, activeModal: null }" class="relative min-h-screen bg-white text-black antialiased font-sans">
 
     <div x-show="mobileMenu" x-cloak @click="mobileMenu = false"
         class="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"></div>

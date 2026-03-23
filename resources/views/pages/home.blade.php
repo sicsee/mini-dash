@@ -16,7 +16,7 @@
                         class="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-black shadow-lg shadow-white/20">
                         <x-lucide-globe class="w-6 h-6" />
                     </div>
-                    <h1 class="hidden text-xl font-black uppercase tracking-[0.2em] md:block">Mini Dash</h1>
+                    <h1 class="hidden text-xl font-black uppercase tracking-[0.2em] md:block font-manrope">Mini Dash</h1>
                 </div>
 
                 <div class="flex items-center gap-4">

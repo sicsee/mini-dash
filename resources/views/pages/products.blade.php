@@ -28,15 +28,18 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="sticky top-0 bg-zinc-50 border-b border-zinc-100 z-10">
                         <tr>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">Produto
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                                Produto
                             </th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">Valor
-                                Unitário</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">Qtd.
-                                Estoque</th>
-                            <th
-                                class="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                                Ações</th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                                Valor Unitário
+                            </th>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                                Qtd. Estoque
+                            </th>
+                            <th class="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                                Ações
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-50">
@@ -69,6 +72,15 @@
                                 </td>
                             </tr>
                         @empty
+                            <tr>
+                                <td colspan="4" class="px-8 py-12 text-center">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <p class="py-20 text-center text-zinc-400 font-bold">
+                                            Nenhum produto no estoque
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -105,8 +117,9 @@
 
                             <form action="{{ route('products.destroy', $p) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button class="p-2 text-zinc-300 hover:text-red-600"><x-lucide-trash-2
-                                        class="w-4 h-4" /></button>
+                                <button class="p-2 text-zinc-300 hover:text-red-600">
+                                    <x-lucide-trash-2 class="w-4 h-4" />
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -146,7 +159,7 @@
                             <label class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Nome do
                                 Produto</label>
                             <input type="text" name="name" x-model="currentProduct.name" required
-                                class="w-full h-12 px-4 rounded-xl border border-zinc-100 bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none">
+                                class="w-full h-12 px-4 rounded-xl border border-zinc-700 bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none">
                         </div>
 
                         <div class="space-y-1.5">
@@ -157,7 +170,7 @@
                                     class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-zinc-300">R$</span>
                                 <input type="number" name="price" step="0.01" x-model="currentProduct.price"
                                     required
-                                    class="w-full h-12 pl-12 pr-4 rounded-xl border border-zinc-100 bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none">
+                                    class="w-full h-12 pl-12 pr-4 rounded-xl border border-zinc-700 bg-zinc-50 focus:bg-white focus:border-black transition-all text-sm font-bold outline-none">
                             </div>
                         </div>
 
