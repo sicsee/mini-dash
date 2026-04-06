@@ -42,6 +42,12 @@
     
         get totalFormatted() {
             return this.totalSale.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        },
+
+        hasEnoughStock(index) {
+            const item = this.items[index];
+            if (!item.product_id) return true;
+            return (this.productsStock[item.product_id] || 0) >= item.quantity;
         }
     }"
     class="min-h-screen lg:h-screen bg-white flex flex-col px-6 lg:px-12 py-8 lg:py-10 font-sans antialiased text-black overflow-x-hidden lg:overflow-hidden">
@@ -94,10 +100,10 @@
                                 </td>
                                 <td class="px-8 py-5 text-right">
                                     <div class="flex items-center justify-end gap-6">
-                                        <button @click="openEdit({{ $sale->load('items') }})"
+                                        <button @click="openEdit({{ $sale->toJson() }})"
                                             class="text-[9px] font-black uppercase tracking-widest text-zinc-400 hover:text-black transition-colors">Detalhes</button>
                                         
-                                        <form action="{{ route('sales.destroy', $sale) }}" method="POST">
+                                        <form action="{{ route('sales.destroy', $sale) }}" method="POST" onsubmit="return confirm('Excluir venda?')">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="text-[10px] font-black uppercase tracking-widest text-zinc-300 hover:text-rose-600 transition-colors mb-2">Excluir</button>
                                         </form>
@@ -144,7 +150,7 @@
                         </span>
                         
                         <div class="flex gap-6">
-                            <button @click="openEdit({{ $sale->load('items') }})" 
+                            <button @click="openEdit({{ $sale->toJson() }})" 
                                     class="text-[9px] font-black uppercase tracking-widest text-zinc-400">Detalhes</button>
                             
                             <form action="{{ route('sales.destroy', $sale) }}" method="POST" onsubmit="return confirm('Excluir venda?')">

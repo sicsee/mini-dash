@@ -24,7 +24,7 @@ class SaleController extends Controller
         $sales = auth()
             ->user()
             ->sales()
-            ->with(['customer', 'items.product'])
+            ->with('items.product')
             ->latest('sale_date')
             ->get();
         $customers = auth()->user()->customers()->get();
