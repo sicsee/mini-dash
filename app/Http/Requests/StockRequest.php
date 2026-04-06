@@ -36,7 +36,7 @@ class StockRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_id.required' => 'O campo quantidade é obrigatório.',
+            'product_id.required' => 'O campo produto é obrigatório.',
 
             'quantity.required' => 'O campo quantidade é obrigatório.',
             'quantity.integer' => 'O valor deve ser inteiro.',

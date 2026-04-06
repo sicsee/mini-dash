@@ -23,7 +23,7 @@ class CustomerRequest extends FormRequest
     {
         return [
             "name"=> "required|max:255|string",
-            "email"=> 'required|email|string',
+            "email"=> 'nullable|email|string',
             "phone" => ['required', 'string', 'regex:/^\d{10,11}$/'],
 
         ];

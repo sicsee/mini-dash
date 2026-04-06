@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SaleRequest;
 use App\Models\Product;
 use App\Models\Sale;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -36,10 +36,18 @@ class SaleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SaleRequest $request)
     {
         try {
             DB::transaction(function () use ($request) {
+                // Pre-flight: validar estoque antes de criar qualquer item
+                foreach ($request->items as $index => $item) {
+                    $product = Product::with('stock')->findOrFail($item['product_id']);
+                    if ($product->stock->quantity < $item['quantity']) {
+                        throw new \Exception("Estoque insuficiente para o produto: {$product->name}");
+                    }
+                }
+
                 $sale = auth()->user()->sales()->create([
                     'customer_id' => $request->customer_id,
                     'sale_date' => $request->sale_date == date('Y-m-d')
@@ -50,29 +58,21 @@ class SaleController extends Controller
                     'total_amount' => collect($request->items)->sum(fn ($i) => $i['quantity'] * $i['price']),
                 ]);
 
+                // Criar itens e descontar estoque
                 foreach ($request->items as $item) {
-                    // ALTERAÇÃO AQUI: Mapeamos 'price' do form para 'price_at_sale' do banco
                     $sale->items()->create([
                         'product_id' => $item['product_id'],
                         'quantity' => $item['quantity'],
                         'price_at_sale' => $item['price'],
                     ]);
 
-                    // Buscamos o produto com o estoque para validação e desconto
                     $product = Product::with('stock')->findOrFail($item['product_id']);
-
-                    if ($product->stock->quantity < $item['quantity']) {
-                        throw new \Exception("Estoque insuficiente para o produto: {$product->name}");
-                    }
-
-                    // Descontamos da tabela stocks (coluna quantity)
                     $product->stock->decrement('quantity', $item['quantity']);
                 }
             });
 
             return redirect()->back()->with('success', 'Venda registrada com sucesso!');
         } catch (\Exception $e) {
-            // O rollback é automático pelo DB::transaction em caso de Exception
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -88,16 +88,29 @@ class SaleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Sale $sale)
+    public function update(SaleRequest $request, Sale $sale)
     {
         try {
             DB::transaction(function () use ($request, $sale) {
-                // 1. Devolver estoque antigo (relacionamento stock -> quantity)
+                // 1. Pre-flight: validar estoque disponível (somando o que será devolvido)
+                $stockAvailable = [];
+                foreach ($sale->items as $oldItem) {
+                    $stockAvailable[$oldItem->product_id] = ($stockAvailable[$oldItem->product_id] ?? $oldItem->product->stock->quantity) + $oldItem->quantity;
+                }
+                foreach ($request->items as $itemData) {
+                    $available = $stockAvailable[$itemData['product_id']]
+                        ?? Product::with('stock')->findOrFail($itemData['product_id'])->stock->quantity;
+                    if ($available < $itemData['quantity']) {
+                        throw new \Exception("Estoque insuficiente para: " . Product::find($itemData['product_id'])->name);
+                    }
+                }
+
+                // 2. Devolver estoque antigo
                 foreach ($sale->items as $oldItem) {
                     $oldItem->product->stock->increment('quantity', $oldItem->quantity);
                 }
 
-                // 2. Atualizar cabeçalho da venda
+                // 3. Atualizar cabeçalho da venda
                 $sale->update([
                     'customer_id' => $request->customer_id,
                     'sale_date' => $request->sale_date,
@@ -106,7 +119,7 @@ class SaleController extends Controller
                     'total_amount' => collect($request->items)->sum(fn ($i) => $i['quantity'] * $i['price']),
                 ]);
 
-                // 3. Remover itens antigos e inserir os novos mapeando o preço
+                // 4. Remover itens antigos e inserir os novos
                 $sale->items()->delete();
 
                 foreach ($request->items as $itemData) {
@@ -116,11 +129,7 @@ class SaleController extends Controller
                         'price_at_sale' => $itemData['price'],
                     ]);
 
-                    // 4. Descontar novo estoque
                     $product = Product::with('stock')->findOrFail($itemData['product_id']);
-                    if ($product->stock->quantity < $itemData['quantity']) {
-                        throw new \Exception("Estoque insuficiente para: {$product->name}");
-                    }
                     $product->stock->decrement('quantity', $itemData['quantity']);
                 }
             });
@@ -136,6 +145,11 @@ class SaleController extends Controller
      */
     public function destroy(Sale $sale): RedirectResponse
     {
+        // Devolve o estoque dos itens antes de deletar a venda
+        foreach ($sale->items as $item) {
+            $item->product->stock->increment('quantity', $item->quantity);
+        }
+
         $sale->delete();
 
         return redirect()->route('sales.index')->with('success', 'Venda excluída com sucesso');

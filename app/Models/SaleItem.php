@@ -13,10 +13,6 @@ class SaleItem extends Model
         'price_at_sale',
     ];
 
-    protected $casts = [
-        'sale_date' => 'date:Y-m-d',
-    ];
-
     protected function casts(): array
     {
         return [
