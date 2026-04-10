@@ -362,3 +362,47 @@ A migration permite `null`, mas a validação exige o campo. Inconsistência.
 - O banco já permite null → a validação deveria refletir isso
 - Um cliente pode existir só com nome e telefone
 - Se no futuro quiser tornar email obrigatório, basta: (1) criar migration para remover nullable e (2) voltar a validação para `required`
+
+---
+
+## Task 10 — Simplificar fluxo de vendas mantendo funcionalidade e segurança
+
+**Status**: ✅ Concluída
+
+### O que foi feito
+
+1. **Criado Service Layer**: `app/Services/SaleService.php` contendo toda a lógica de negócio de vendas
+2. **Controller refatorado**: `app/Http/Controllers/SaleController.php` agora delega para o service, mantendo apenas:
+   - Validação de entrada (via SaleRequest)
+   - Tratamento de exceções e respostas HTTP
+   - Injeção de dependência do SaleService
+3. **Mantida segurança e funcionalidade**:
+   - Todas as operações ainda ocorrem dentro de transações DB
+   - Pré-validação de estoque preservada
+   - Lógica de devolução de estoque em update/delete mantida
+   - Validação de entrada via SaleRequest preservada
+
+### Benefícios alcançados
+
+- **Separação de responsabilidades**: controllers ficaram mais finos e focados em preocupações HTTP
+- **Testabilidade**: SaleService pode ser testado unitariamente sem precisar de contexto HTTP
+- **Legibilidade**: fluxo de vendas mais linear e fácil de seguir no service
+- **Manutenção**: lógica centralizada em um local, facilitando futuras mudanças
+- **Reuso**: service pode ser utilizado em outros contextos (jobs, comandos artisan, etc.)
+
+### Código resultante
+
+**SaleController::store()** agora é apenas:
+```php
+public function store(SaleRequest $request, SaleService $saleService)
+{
+    try {
+        $saleService->create($request->validated(), auth()->id());
+        return redirect()->back()->with('success', 'Venda registrada com sucesso!');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
+    }
+}
+```
+
+O service contém toda a lógica complexa de transação, validação de estoque e operações de BD, enquanto o controller foca em coordenar a resposta HTTP.
